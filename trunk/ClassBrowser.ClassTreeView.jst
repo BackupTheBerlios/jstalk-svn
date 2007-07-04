@@ -1,0 +1,85 @@
+name: ClassTreeView
+superclass: JSObject
+space: ClassBrowser
+attributes: [widget,currentClass,refreshing]
+class_attributes: []
+doc: ""
+
+#widget:
+function anonymous() {
+    return this._widget;
+}
+
+
+#setWidget:
+function anonymous(widget) {
+    this._widget = widget;
+}
+
+
+#currentClass:
+function anonymous() {
+    return this._currentClass;
+}
+
+
+#setCurrentClass:
+function anonymous(currentClass) {
+    this._currentClass = currentClass;
+}
+
+
+#refreshing:
+function anonymous() {
+    return this._refreshing;
+}
+
+
+#setRefreshing:
+function anonymous(refreshing) {
+    this._refreshing = refreshing;
+}
+
+
+#refresh:
+function () {
+    this._refreshing = true;
+    var root = new pkg.javax.swing.tree.DefaultMutableTreeNode(JSObject.className());
+    var loadChildren = function (root, klass) {
+        var classes = klass.subclasses();
+        var node;
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i].space()) {
+                continue;
+            }
+            node = pkg.javax.swing.tree.DefaultMutableTreeNode(classes[i].className());
+            root.add(node);
+            arguments.callee(node, classes[i]);
+        }
+        return root;
+    };
+    loadChildren(root, JSObject);
+    this._widget.getModel().setRoot(root);
+    this._refreshing = false;
+}
+
+
+#initialize:
+function (classBrowser) {
+    var self = this;
+    this._widget = new pkg.javax.swing.JTree();
+    this._widget.getSelectionModel().setSelectionMode(pkg.javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this._widget.addTreeSelectionListener(JavaEvent.create(function (e) {
+        if (self._refreshing) {
+            return;
+        }
+        var str = self._widget.getLastSelectedPathComponent();
+        if (str) {
+            self._currentClass = $global[str];
+        }
+        classBrowser.selectClass(self._currentClass, true);
+    }));
+}
+
+
+

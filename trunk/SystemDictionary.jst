@@ -1,0 +1,56 @@
+name: SystemDictionary
+superclass: JSObject
+space: null
+attributes: [classes]
+class_attributes: []
+doc: "System classes"
+
+#classes:function() {
+
+    return this._classes;
+}
+
+#initialize:function() {
+
+    if (!this._classes) {
+        this._classes = new Array;
+    }
+    this.registerClass(JSObject);
+    this.registerClass(System);
+    this.registerClass(SystemDictionary);
+}
+
+#loadClasses:function() {
+
+    //teste
+    $ClassLoader.load("JSTextArea");
+    $ClassLoader.load("BasicInspector");
+    $ClassLoader.load("BasicInspector.PropertyList");
+    $ClassLoader.load("Inspector");
+    $ClassLoader.load("Inspector.PropertyList");
+    $ClassLoader.load("ClassBrowser");
+    $ClassLoader.load("ClassBrowser.Costume");
+    $ClassLoader.load("ClassBrowser.ClassTreeView");
+    $ClassLoader.load("ClassBrowser.SpaceList");
+    $ClassLoader.load("ClassBrowser.MethodList");
+    $ClassLoader.load("Workspace");
+    $ClassLoader.load("Fileout");
+    $ClassLoader.load("JavaEvent");
+}
+
+#registerClass:function(klass) {
+
+    this._classes.pushUnique(klass);
+}
+
+#removeClass:function(className) {
+
+    this._classes.remove(className);
+}
+
+#setClasses:function(classes) {
+
+    this._classes = classes;
+}
+
+

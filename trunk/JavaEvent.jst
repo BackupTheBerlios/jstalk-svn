@@ -1,0 +1,18 @@
+name: JavaEvent
+superclass: JSObject
+space: null
+attributes: []
+class_attributes: []
+doc: ""
+
+>>create:function(func) {
+  return function(e) {
+    try { 
+      func(e) 
+    } catch(ex) { 
+      pkg.javax.swing.JOptionPane.showMessageDialog(null, ex.toSource()) 
+    }
+  }
+}
+
+

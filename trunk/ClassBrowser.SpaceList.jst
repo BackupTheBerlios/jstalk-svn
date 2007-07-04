@@ -1,0 +1,124 @@
+name: SpaceList
+superclass: JSObject
+space: ClassBrowser
+attributes: [widget,model,classBrowser,refreshing]
+class_attributes: []
+doc: ""
+
+#widget:
+function anonymous() {
+    return this._widget;
+}
+
+
+#setWidget:
+function anonymous(widget) {
+    this._widget = widget;
+}
+
+
+#model:
+function anonymous() {
+    return this._model;
+}
+
+
+#setModel:
+function anonymous(model) {
+    this._model = model;
+}
+
+
+#classBrowser:
+function anonymous() {
+    return this._classBrowser;
+}
+
+
+#setClassBrowser:
+function anonymous(classBrowser) {
+    this._classBrowser = classBrowser;
+}
+
+
+#refreshing:
+function anonymous() {
+    return this._refreshing;
+}
+
+
+#setRefreshing:
+function anonymous(refreshing) {
+    this._refreshing = refreshing;
+}
+
+
+#refresh:
+function () {
+    this._refreshing = true;
+    var selected = this._widget.getSelectedValue();
+    this._model.clear();
+    var klass = this._classBrowser.currentClass();
+    if (!klass) {
+        return;
+    }
+    if (klass.space()) {
+        klass = klass.space();
+    }
+    this._model.addElement(klass.className());
+    var owned = klass.ownedClasses();
+    for (var i = 0; i < owned.length; i++) {
+        this._model.addElement(owned[i].className());
+    }
+    this._widget.setSelectedValue(selected, true);
+    this._refreshing = false;
+}
+
+
+#initialize:
+function (classBrowser) {
+    this._classBrowser = classBrowser;
+
+    //spacelist
+    this._model = new pkg.javax.swing.DefaultListModel;
+    this._widget = new pkg.javax.swing.JList(this._model);
+    this._widget.setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    var self = this;
+    this._widget.addListSelectionListener(JavaEvent.create(function (e) {
+        if (self._refreshing) {
+            return;
+        }
+        var gklass = self._classBrowser.costume().classTreeView().currentClass();
+        var prop = self._widget.getSelectedValue();
+        if (prop) {
+            self._classBrowser.selectClass((prop == gklass.className() ? gklass : gklass[prop]));
+        }
+    }));
+    this._widget.addMouseListener(JavaEvent.create(function (e) {
+        if (e.getID() == java.awt.event.MouseEvent.MOUSE_CLICKED && e.getClickCount() == 2 && pkg.javax.swing.SwingUtilities.isLeftMouseButton(e)) {
+            if (self._widget.getSelectedValue()) {
+                Inspector.inspect(self._classBrowser.currentClass());
+            }
+        } else {
+            if (e.getID() == java.awt.event.MouseEvent.MOUSE_CLICKED && pkg.javax.swing.SwingUtilities.isRightMouseButton(e)) {
+                self._widget.setSelectedIndex(self._widget.locationToIndex(e.getPoint()));
+                var menu = new pkg.javax.swing.JPopupMenu();
+                var mi = new pkg.javax.swing.JMenuItem("Remove");
+                mi.addActionListener(function () {
+                    self._classBrowser.removeCurrentClass();
+                });
+                menu.add(mi);
+                menu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
+    }));
+}
+
+
+#selectClass:
+function (name) {
+    this._widget.setSelectedValue(name, true);
+}
+
+
+

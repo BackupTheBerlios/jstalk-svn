@@ -1,0 +1,183 @@
+name: MethodList
+superclass: JSObject
+space: ClassBrowser
+attributes: [widget,model,classButton,instanceButton,classBrowser,refreshing,methods]
+class_attributes: []
+doc: ""
+
+#widget:
+function anonymous() {
+    return this._widget;
+}
+
+
+#setWidget:
+function anonymous(widget) {
+    this._widget = widget;
+}
+
+
+#model:
+function anonymous() {
+    return this._model;
+}
+
+
+#setModel:
+function anonymous(model) {
+    this._model = model;
+}
+
+
+#classButton:
+function anonymous() {
+    return this._classButton;
+}
+
+
+#setClassButton:
+function anonymous(classButton) {
+    this._classButton = classButton;
+}
+
+
+#instanceButton:
+function anonymous() {
+    return this._instanceButton;
+}
+
+
+#setInstanceButton:
+function anonymous(instanceButton) {
+    this._instanceButton = instanceButton;
+}
+
+
+#classBrowser:
+function anonymous() {
+    return this._classBrowser;
+}
+
+
+#setClassBrowser:
+function anonymous(classBrowser) {
+    this._classBrowser = classBrowser;
+}
+
+
+#refreshing:
+function anonymous() {
+    return this._refreshing;
+}
+
+
+#setRefreshing:
+function anonymous(refreshing) {
+    this._refreshing = refreshing;
+}
+
+
+#methods:
+function anonymous() {
+    return this._methods;
+}
+
+
+#setMethods:
+function anonymous(methods) {
+    this._methods = methods;
+}
+
+
+#classToggled:
+function () {
+    return this._classButton.isSelected();
+}
+
+
+#selectMethod:
+function (name) {
+    this._widget.setSelectedValue(name, true);
+}
+
+
+#refresh:
+function () {
+    this._refreshing = true;
+    var selected = this._widget.getSelectedValue();
+    this._model.clear();
+    var klass = this._classBrowser.currentClass();
+    if (!klass) {
+        return;
+    }
+    var methods;
+    if (this._instanceButton.isSelected()) {
+        methods = klass.instanceMethods().sort();
+    } else {
+        methods = klass.methods().sort();
+    }
+    for (var i = 0; i < methods.length; i++) {
+        this._model.addElement(methods[i]);
+    }
+    this._widget.setSelectedValue(selected, true);
+    this._refreshing = false;
+    //TODO: set the current selection to this._classBrowser.currentMethod()
+}
+
+
+#instanceToggled:
+function () {
+    return this._instanceButton.isSelected();
+}
+
+
+#initialize:
+function (classBrowser) {
+    this._classBrowser = classBrowser;
+    var self = this;
+    this._instanceButton = new pkg.javax.swing.JToggleButton("Instance", true);
+    this._classButton = new pkg.javax.swing.JToggleButton("Class", false);
+    this._instanceButton.addItemListener(JavaEvent.create(function (e) {
+        var sel = e.getStateChange() == java.awt.event.ItemEvent.SELECTED;
+        self._classButton.setSelected(!sel);
+        if (sel) {
+            self.refresh();
+        }
+    }));
+    this._classButton.addItemListener(JavaEvent.create(function (e) {
+        var sel = e.getStateChange() == java.awt.event.ItemEvent.SELECTED;
+        self._instanceButton.setSelected(!sel);
+        if (sel) {
+            self.refresh();
+        }
+    }));
+    this._model = new pkg.javax.swing.DefaultListModel;
+    this._widget = new pkg.javax.swing.JList(this._model);
+    this._widget.setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    this._widget.addListSelectionListener(JavaEvent.create(function (e) {
+        if (self._refreshing) {
+            return;
+        }
+        self._classBrowser.selectMethod(self._widget.getSelectedValue().toString(), self._instanceButton.isSelected());
+    }));
+    this._widget.addMouseListener(JavaEvent.create(function (e) {
+        if (e.getID() == java.awt.event.MouseEvent.MOUSE_CLICKED && pkg.javax.swing.SwingUtilities.isRightMouseButton(e)) {
+            self._widget.setSelectedIndex(self._widget.locationToIndex(e.getPoint()));
+            var menu = new pkg.javax.swing.JPopupMenu();
+            var mi = new pkg.javax.swing.JMenuItem("Add method");
+            mi.addActionListener(function () {
+                self._classBrowser.addMethod(self._instanceButton.isSelected());
+            });
+            menu.add(mi);
+            mi = new pkg.javax.swing.JMenuItem("Remove");
+            mi.addActionListener(function () {
+                self._classBrowser.removeCurrentMethod();
+            });
+            menu.add(mi);
+            menu.show(e.getComponent(), e.getX(), e.getY());
+        }
+    }));
+}
+
+
+

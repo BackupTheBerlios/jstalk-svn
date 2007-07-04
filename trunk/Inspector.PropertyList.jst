@@ -1,0 +1,152 @@
+name: PropertyList
+superclass: JSObject
+space: Inspector
+attributes: [widget,inspector,lists,models]
+class_attributes: []
+doc: ""
+
+#widget:
+function anonymous() {
+    return this._widget;
+}
+
+
+#setWidget:
+function anonymous(widget) {
+    this._widget = widget;
+}
+
+
+#inspector:
+function anonymous() {
+    return this._inspector;
+}
+
+
+#setInspector:
+function anonymous(inspector) {
+    this._inspector = inspector;
+}
+
+
+#lists:
+function anonymous() {
+    return this._lists;
+}
+
+
+#setLists:
+function anonymous(lists) {
+    this._lists = lists;
+}
+
+
+#models:
+function anonymous() {
+    return this._models;
+}
+
+
+#setModels:
+function anonymous(models) {
+    this._models = models;
+}
+
+
+#addAttributeProperty:
+function (prop) {
+    this._models[0].addElement(prop);
+}
+
+
+#addProperty:
+function (prop) {
+    this._models[2].addElement(prop);
+}
+
+
+#setSelectedProperty:
+function (val) {
+    var i = this._widget.getSelectedIndex();
+    this._lists[i].setSelectedValue(val, true);
+}
+
+
+#clearProperties:
+function () {
+    for (var i = 0; i < 3; i++) {
+        this._models[i].clear();
+    }
+}
+
+
+#initialize:
+function (inspector) {
+    this._inspector = inspector;
+    this._widget = new pkg.javax.swing.JTabbedPane();
+    this._lists = new Array(3);
+    this._models = new Array(3);
+    for (var i = 0; i < 3; i++) {
+        this._models[i] = new pkg.javax.swing.DefaultListModel;
+        this._lists[i] = new pkg.javax.swing.JList(this._models[i]);
+        this._lists[i].setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    }
+    this._widget.addTab("attributes", this._lists[0]);
+    this._widget.addTab("methods", this._lists[1]);
+    this._widget.addTab("all", this._lists[2]);
+    this.createEvents();
+}
+
+
+#addMethodProperty:
+function (prop) {
+    this._models[1].addElement(prop);
+}
+
+
+#addInAll:
+function (prop) {
+    this._models[0].addElement(prop);
+    this._models[1].addElement(prop);
+    this._models[2].addElement(prop);
+}
+
+
+#createEvents:
+function () {
+    var self = this;
+    slistener = JavaEvent.create(function (e) {
+        if (self._inspector.refreshing()) {
+            return;
+        }
+        if (!e.valueIsAdjusting) {
+            var prop = self.selectedProperty();
+            self._inspector.showPropertyValue(prop);
+        }
+    });
+    mlistener = JavaEvent.create(function (e) {
+        if (e.getID() == java.awt.event.MouseEvent.MOUSE_CLICKED && e.getClickCount() == 2) {
+            var prop = self.selectedProperty();
+            if (prop == "this") {
+                self._inspector.klass().inspect(self._inspector.obj());
+            } else {
+                self._inspector.klass().inspect(self._inspector.obj()[prop.toString()]);
+            }
+        }
+    });
+    for (var i = 0; i < 3; i++) {
+        this._lists[i].addListSelectionListener(slistener);
+        this._lists[i].addMouseListener(mlistener);
+    }
+}
+
+
+#selectedProperty:
+function () {
+    var i = this._widget.getSelectedIndex();
+    var ret = this._lists[i].getSelectedValue();
+    return ret ? ret.toString() : null;
+}
+
+
+

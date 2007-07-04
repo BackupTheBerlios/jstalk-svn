@@ -1,0 +1,151 @@
+name: Workspace
+superclass: JSObject
+space: null
+attributes: [frame,textarea]
+class_attributes: [windows]
+doc: "I'm the main tool to program and evaluate code"
+
+>>executeOnActive:
+function (func) {
+    var w = this.firstActiveWindow();
+    if (w) {
+        func(w);
+    }
+}
+
+
+>>firstActiveWindow:
+function () {
+    var ws = this.windows();
+    for (var i = 0; i < ws.length; i++) {
+        if (ws[i].isVisible()) {
+            return ws[i];
+        }
+    }
+    return null;
+}
+
+
+>>open:
+function () {
+    this.klass().create().show();
+}
+
+
+>>print:
+function (str) {
+    this.executeOnActive(function (w) {
+        w.print(str);
+    });
+}
+
+
+>>puts:
+function (str) {
+    this.executeOnActive(function (w) {
+        w.puts(str);
+    });
+}
+
+
+>>setWindows:
+function (windows) {
+    this._windows = windows;
+}
+
+
+>>windows:
+function () {
+    return this._windows;
+}
+
+
+#isVisible:
+function () {
+    return this._frame.isVisible();
+}
+
+
+#initUI:
+function () {
+    this._frame = new pkg.javax.swing.JFrame();
+    this._frame.setSize(300, 300);
+    this._frame.setTitle("Workspace");
+    this._textarea = JSTextArea.create();
+    var scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._textarea.widget());
+    this._frame.getContentPane().add(scroller);
+    this.createMenuBar();
+}
+
+
+#puts:
+function (str) {
+    this.print(str + "\n");
+}
+
+
+#createMenuBar:
+function () {
+    var self = this;
+    var mb = new pkg.javax.swing.JMenuBar();
+    var menu = new pkg.javax.swing.JMenu("Tools");
+
+    //doit
+    var mi = new pkg.javax.swing.JMenuItem("Do it");
+    mi.addActionListener(JavaEvent.create(function () {
+        self._textarea.doIt();
+    }));
+    var accel = java.awt.event.KeyEvent.VK_D;
+    var keyStroke = pkg.javax.swing.KeyStroke.getKeyStroke(accel, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false);
+    mi.setAccelerator(keyStroke);
+    menu.add(mi);
+
+    //print it
+    mi = new pkg.javax.swing.JMenuItem("Print it");
+    mi.addActionListener(JavaEvent.create(function () {
+        self._textarea.printIt();
+    }));
+    var accel = java.awt.event.KeyEvent.VK_P;
+    var keyStroke = pkg.javax.swing.KeyStroke.getKeyStroke(accel, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false);
+    mi.setAccelerator(keyStroke);
+    menu.add(mi);
+
+    //inspecti it
+    mi = new pkg.javax.swing.JMenuItem("Inspect it");
+    mi.addActionListener(JavaEvent.create(function () {
+        self._textarea.inspectIt();
+    }));
+    var accel = java.awt.event.KeyEvent.VK_I;
+    var keyStroke = pkg.javax.swing.KeyStroke.getKeyStroke(accel, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false);
+    mi.setAccelerator(keyStroke);
+    menu.add(mi);
+    mb.add(menu);
+    this._frame.setJMenuBar(mb);
+}
+
+
+#print:
+function (str) {
+    this._textarea.append(str);
+}
+
+
+#show:
+function () {
+    this._frame.setVisible(true);
+}
+
+
+#initialize:
+function () {
+    //initialize class instances
+    if (!this.klass()._windows) {
+        this.klass()._windows = new Array;
+    }
+    this.initUI();
+    this.klass().windows().push(this);
+}
+
+
+

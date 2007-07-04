@@ -1,0 +1,203 @@
+name: ClassBrowser
+superclass: JSObject
+space: null
+attributes: [costume,currentClass,currentMethodName]
+class_attributes: [windows]
+doc: "System class browser"
+
+>>open:
+function () {
+    this.create().show();
+}
+
+
+>>setWindows:
+function anonymous(windows) {
+    this._windows = windows;
+}
+
+
+>>windows:
+function anonymous() {
+    return this._windows;
+}
+
+
+#accept:
+function () {
+    if (this._currentMethodName) {
+        this.acceptMethod();
+    } else {
+        this.acceptClass();
+    }
+    this._costume.refresh();
+}
+
+
+#acceptClass:
+function () {
+    var decl = this._costume.codeArea().widget().getText();
+    var argv = new Function("return {" + decl + "}")();
+    if (this._currentClass && argv.name == this._currentClass.className()) {
+      //TODO: we shall change the class definition (name, attributes, class_attributes, superclass, space, mixin, doc)
+    } else {
+        var superclass = argv.superclass ? argv.superclass : JSObject;
+        superclass.subclass(argv);
+        this._costume.refresh();
+    }
+}
+
+
+#acceptMethod:
+function () {
+    if (this._costume.methodList().instanceToggled()) {
+        this._currentClass.registerMethod(this._currentMethodName, String(this._costume.codeArea().widget().getText()));
+    } else {
+        this._currentClass.registerClassMethod(this._currentMethodName, String(this._costume.codeArea().widget().getText()));
+    }
+}
+
+
+#addMethod:
+function (isInstance) {
+    var func;
+    var reg;
+    if (isInstance) {
+        func = this._currentClass.instanceMethod;
+        reg = this._currentClass.registerMethod;
+    } else {
+        func = this._currentClass.method;
+        reg = this._currentClass.registerClassMethod;
+    }
+    var name;
+    var exists = "";
+    do {
+        name = pkg.javax.swing.JOptionPane.showInputDialog(exists + "Inform the name of the new method:");
+        if (!name || name.length() == 0) {
+            return;
+        }
+        exists = "Method exists. ";
+    } while (func.call(this._currentClass, name));
+    reg.call(this._currentClass, name, new Function);
+    this._costume.refresh();
+    this._costume.methodList().selectMethod(name, isInstance);
+}
+
+
+#costume:
+function anonymous() {
+    return this._costume;
+}
+
+
+#currentClass:
+function anonymous() {
+    return this._currentClass;
+}
+
+
+#currentMethodName:
+function anonymous() {
+    return this._currentMethodName;
+}
+
+
+#doIt:
+function () {
+    this._costume.codeArea().doIt();
+    this._costume.refresh();
+}
+
+
+#initialize:
+function () {
+    //initializing class instance!
+    if (!this.klass()._windows) {
+        this.klass()._windows = new Array;
+    }
+    this._costume = this.klass().Costume.create(this);
+    this._costume.displayCode(JSObject.simpleTemplateDeclaration());
+    this._costume.refresh();
+    this.klass().windows().push(this);
+}
+
+
+#inspectIt:
+function () {
+    this._costume.codeArea().inspectIt();
+    this._costume.refresh();
+}
+
+
+#printIt:
+function () {
+    this._costume.codeArea().printIt();
+    this._costume.refresh();
+}
+
+
+#removeCurrentClass:
+function () {
+    this._currentClass.remove();
+    this._currentClass = null;
+    this._costume.refresh();
+}
+
+
+#removeCurrentMethod:
+function () {
+    this._currentClass.removeMethod(this._currentMethodName);
+    this._costume.refresh();
+}
+
+
+#selectClass:
+function (klass, loadSpaceList) {
+    this._currentClass = klass;
+    this._currentMethodName = null;
+    if (loadSpaceList) {
+        this._costume.spaceList().refresh();
+        this._costume.spaceList().selectClass(klass.className());
+    }
+    this._costume.methodList().refresh();
+    this._costume.displayCode(klass.simpleDeclaration());
+    this._costume.setTitle(klass.className());
+}
+
+
+#selectMethod:
+function (name, isInstance) {
+    this._currentMethodName = name;
+    if (isInstance) {
+        this._costume.displayCode(this._currentClass.instanceMethod(name).toSource());
+    } else {
+        this._costume.displayCode(this._currentClass.method(name).toSource());
+    }
+}
+
+
+#setCostume:
+function anonymous(costume) {
+    this._costume = costume;
+}
+
+
+#setCurrentClass:
+function anonymous(currentClass) {
+    this._currentClass = currentClass;
+}
+
+
+#setCurrentMethodName:
+function anonymous(currentMethodName) {
+    this._currentMethodName = currentMethodName;
+}
+
+
+#show:
+function () {
+    this._costume.show();
+}
+
+
+
