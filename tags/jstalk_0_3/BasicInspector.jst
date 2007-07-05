@@ -1,0 +1,360 @@
+name: BasicInspector
+superclass: JSObject
+space: null
+attributes: [refreshing,obj,list,frame,valueArea,codeArea]
+class_attributes: [windows]
+doc: "Basic Inspector utility"
+
+>>inspect:
+function (obj) {
+    this.create(obj).show();
+}
+
+
+>>refreshAll:
+function () {
+    for (var w = 0; w < this.windows().length; ++w) {
+        this.windows()[w].refresh();
+    }
+}
+
+
+>>setWindows:
+function anonymous(windows) {
+    this._windows = windows;
+}
+
+
+>>windows:
+function anonymous() {
+    return this._windows;
+}
+
+
+#accept:
+function () {
+    //accepts the text in the valueArea as the value
+    //of the selected property in the JList
+
+    if (!this._list.selectedProperty()) {
+        return;
+    }
+
+    try {
+        var prop = this._list.selectedProperty().toString();
+        var val = this._valueArea.evalText();
+        if (val) {
+            this._obj[prop] = val;
+        }
+        this.klass().refreshAll();
+    }
+    catch (e) {
+        pkg.javax.swing.JOptionPane.showMessageDialog(null, "Accept: " + e.toSource());
+    }
+}
+
+
+#codeArea:
+function anonymous() {
+    return this._codeArea;
+}
+
+
+#createCodeWidget:
+function (pane) {
+    this._codeArea = JSTextArea.create(this._obj);
+    this._codeArea.widget().setMaximumSize(new java.awt.Dimension(java.lang.Integer.MAX_VALUE, 180));
+
+    //clear selection of the other area on focus gain
+    var self = this;
+    this._codeArea.widget().addFocusListener(JavaEvent.create(function (e) {
+        if (e.getID() == java.awt.event.FocusEvent.FOCUS_GAINED) {
+            self._valueArea.clearSelection();
+        }
+    }));
+    var scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._codeArea.widget());
+    pane.add(scroller);
+}
+
+
+#createFrame:
+function () {
+    var label = this._obj.isClass() ? "[class " + this.obj().className() + "]" : "an " + this._obj.klass().className();
+    this._frame = new pkg.javax.swing.JFrame(label);
+    this._frame.setSize(300, 300);
+}
+
+
+#createListWidget:
+function (pane) {
+    this._list = this.klass().PropertyList.create(this);
+    var scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._list.widget());
+    pane.add(scroller);
+}
+
+
+#createMenuBar:
+function () {
+    var self = this;
+    var mb = new pkg.javax.swing.JMenuBar();
+    var menu = new pkg.javax.swing.JMenu("Tools");
+
+     //doit
+    var mi = new pkg.javax.swing.JMenuItem("Do it");
+    mi.addActionListener(JavaEvent.create(function () {
+        self.doIt();
+    }));
+    var accel = java.awt.event.KeyEvent.VK_D;
+    var keyStroke = pkg.javax.swing.KeyStroke.getKeyStroke(accel, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false);
+    mi.setAccelerator(keyStroke);
+    menu.add(mi);
+
+    //print it
+    mi = new pkg.javax.swing.JMenuItem("Print it");
+    mi.addActionListener(JavaEvent.create(function () {
+        self.printIt();
+    }));
+    var accel = java.awt.event.KeyEvent.VK_P;
+    var keyStroke = pkg.javax.swing.KeyStroke.getKeyStroke(accel, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false);
+    mi.setAccelerator(keyStroke);
+    menu.add(mi);
+
+    //inspect it
+    mi = new pkg.javax.swing.JMenuItem("Inspect it");
+    mi.addActionListener(JavaEvent.create(function () {
+        self.inspectIt;
+    }));
+    var accel = java.awt.event.KeyEvent.VK_I;
+    var keyStroke = pkg.javax.swing.KeyStroke.getKeyStroke(accel, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false);
+    mi.setAccelerator(keyStroke);
+    menu.add(mi);
+
+    //accept
+    var mi = new pkg.javax.swing.JMenuItem("Accept");
+    mi.addActionListener(JavaEvent.create(function () {
+        self.accept();
+    }));
+    var accel = java.awt.event.KeyEvent.VK_S;
+    var keyStroke = pkg.javax.swing.KeyStroke.getKeyStroke(accel, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false);
+    mi.setAccelerator(keyStroke);
+    menu.add(mi);
+
+    //Inspect myself
+    var mi = new pkg.javax.swing.JMenuItem("Inspect myself");
+    mi.addActionListener(JavaEvent.create(function () {
+        try {
+            self.klass().inspect(self);
+        }
+        catch (e) {
+            pkg.javax.swing.JOptionPane.showMessageDialog(null, "Insp. Myself: " + e.toSource());
+        }
+    }));
+    menu.add(mi);
+    mb.add(menu);
+    this._frame.setJMenuBar(mb);
+}
+
+
+#createValueWidget:
+function (pane) {
+    this._valueArea = JSTextArea.create(this._obj);
+    this._valueArea.widget().setBorder(pkg.javax.swing.BorderFactory.createEtchedBorder());
+    this._valueArea.widget().setLineWrap(true);
+    var scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._valueArea.widget());
+
+    //clear selection of the other area on focus gain
+    var self = this;
+    this._valueArea.widget().addFocusListener(JavaEvent.create(function (e) {
+        if (e.getID() == java.awt.event.FocusEvent.FOCUS_GAINED) {
+            self._codeArea.clearSelection();
+        }
+    }));
+    pane.add(scroller);
+}
+
+
+#createWidgets:
+function (master) {
+    var toppane = new pkg.javax.swing.JPanel();
+    toppane.setLayout(new pkg.javax.swing.BoxLayout(toppane, pkg.javax.swing.BoxLayout.X_AXIS));
+    this.createFrame();
+    this.createListWidget(toppane);
+    this.createValueWidget(toppane);
+    master.add(toppane);
+    this.createCodeWidget(master);
+}
+
+
+#currentTextWidget:
+function () {
+    if (this._valueArea.hasSelection()) {
+        return this._valueArea;
+    } else {
+        return this._codeArea;
+    }
+}
+
+
+#doIt:
+function () {
+    this.currentTextWidget().doIt();
+    this.klass().refreshAll();
+}
+
+
+#frame:
+function anonymous() {
+    return this._frame;
+}
+
+
+#initUI:
+function () {
+    var master = new pkg.javax.swing.JPanel();
+    master.setLayout(new pkg.javax.swing.BoxLayout(master, pkg.javax.swing.BoxLayout.Y_AXIS));
+    this.createWidgets(master);
+    this._frame.getContentPane().add(master);
+    this.createMenuBar();
+}
+
+
+#initWindow:
+function () {
+    this.klass().windows().push(this);
+    this.klass().refreshAll();
+}
+
+
+#initialize:
+function (obj) {
+    this._refreshing = false;
+
+    //initialize class instances
+    if (!this.klass()._windows) {
+        this.klass()._windows = new Array;
+    }
+    this.setObj(obj);
+    this.initUI(obj);
+    this.initWindow();
+}
+
+
+#inspectIt:
+function () {
+    this.currentTextWidget().inspectIt();
+    this.klass().refreshAll();
+}
+
+
+#list:
+function anonymous() {
+    return this._list;
+}
+
+
+#obj:
+function anonymous() {
+    return this._obj;
+}
+
+
+#printIt:
+function () {
+    this.currentTextWidget().printIt();
+    this.klass().refreshAll();
+}
+
+
+#refresh:
+function () {
+    this._refreshing = true;
+    var sel = this._list.selectedProperty();
+    this._list.clearProperties();
+    this._list.addProperty("this");
+    for (prop in this._obj) { //list all!
+        this._list.addProperty(prop);
+    }
+    if (sel) {
+        this._list.setSelectedProperty(sel);
+    }
+    this._refreshing = false;
+}
+
+
+#refreshing:
+function anonymous() {
+    return this._refreshing;
+}
+
+
+#setObj:
+function (o) {
+    if (!o) {
+        throw "no object to inspect";
+    }
+    this._obj = o;
+}
+
+
+#show:
+function () {
+    this._frame.setVisible(true);
+}
+
+
+#showPropertyValue:
+function (prop) {
+    //note: typeof null == 'object'. We should lookup for null before check for object
+    var str = "";
+    try {
+        if (prop == "this") {
+            if (typeof this._obj == "function") {
+                if (this._obj.className) {
+                    str = this._obj.className();
+                } else {
+                    str = this._obj.toSource();
+                }
+            } else {
+                if (this._obj.klass) {
+                    str = this.obj().className ? this.obj().className() : "an " + this.obj().klass().className();
+                } else {
+                    str = typeof this._obj;
+                }
+            }
+        } else {
+            if (this._obj[prop] == null) {
+                str = "null";
+            } else {
+                if (typeof this._obj[prop] == "object") {
+                    if (this._obj[prop].toSource) {
+                        str = this._obj[prop].toSource();
+                    } else {
+                        str = this._obj[prop].toString();
+                    }
+                } else {
+                    if (typeof this._obj[prop] == "function") {
+                        str = this._obj[prop].toSource();
+                    } else {
+                        str = this._obj[prop].toString().rep();
+                    }
+                }
+            }
+        }
+    }
+    catch (e) {
+        str = "//an " + (typeof this._obj[prop]);
+    }
+    this._valueArea.widget().setText(str);
+}
+
+
+#valueArea:
+function anonymous() {
+    return this._valueArea;
+}
+
+
+

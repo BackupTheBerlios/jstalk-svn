@@ -1,0 +1,65 @@
+name: Fileout
+superclass: JSObject
+space: null
+attributes: []
+class_attributes: []
+doc: ""
+
+#fileoutClass:
+function (klass) {
+    this._write(this.buildFileName(klass), this.buildSource(klass));
+}
+
+
+#buildMethods:
+function (klass) {
+    var txt = "";
+    var methods = klass.methods();
+    for (var i = 0; i < methods.length; i++) {
+        txt += ">>" + methods[i] + ":" + klass.method(methods[i]).toSource() + "\n\n";
+    }
+    var methods = klass.instanceMethods();
+    for (var i = 0; i < methods.length; i++) {
+        txt += "#" + methods[i] + ":" + klass.instanceMethod(methods[i]).toSource() + "\n\n";
+    }
+    return txt;
+}
+
+
+#buildSource:
+function (klass) {
+    var txt = "";
+    txt += "name: " + klass.className() + "\n";
+    txt += "superclass: " + klass.superclass().className() + "\n";
+    txt += "space: " + (klass.space() ? klass.space().className() : "null") + "\n";
+    txt += "attributes: [" + klass.instanceAttributes().join(",") + "]\n";
+    txt += "class_attributes: [" + klass.attributes().join(",") + "]\n";
+    txt += "doc: " + (klass.doc() ? klass.doc().rep() : "\"\"") + "\n\n";
+    txt += this.buildMethods(klass);
+    return txt;
+}
+
+
+#buildFileName:
+function (klass) {
+    var name = klass.className();
+    return (klass.space() ? klass.space().className() + "." + name : name) + ".jst";
+}
+
+
+#_write:
+function (name, text) {
+    with (new JavaImporter(java.io)) {
+        try {
+            var out = new BufferedWriter(new FileWriter(name));
+            out.write(text + "\n");
+            out.close();
+        }
+        catch (e) {
+            print("Fileout: uops");
+        }
+    }
+}
+
+
+

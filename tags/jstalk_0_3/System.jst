@@ -1,0 +1,24 @@
+name: System
+superclass: JSObject
+space: null
+attributes: []
+class_attributes: [dictionary]
+doc: "JSTalk system"
+
+>>initialize:
+function () {
+  this._dictionary = SystemDictionary.create()
+  this._dictionary.loadClasses();
+  this.initEnvironment()
+}
+
+>>dictionary:
+function () {
+  return this._dictionary
+}
+
+>>initEnvironment:
+function() {
+  Workspace.open();
+}
+

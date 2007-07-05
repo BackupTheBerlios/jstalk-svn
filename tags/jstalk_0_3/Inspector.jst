@@ -1,0 +1,124 @@
+name: Inspector
+superclass: BasicInspector
+space: null
+attributes: [hierarchyList,currentClass]
+class_attributes: []
+doc: "Elaborated Inspector utility"
+
+#createHierarchyList:
+function (pane) {
+    this._hierarchyList = new pkg.javax.swing.JTree();
+    this._hierarchyList.getSelectionModel().setSelectionMode(pkg.javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION);
+    var self = this;
+    this._hierarchyList.addTreeSelectionListener(JavaEvent.create(function (e) {
+        var str = self._hierarchyList.getLastSelectedPathComponent();
+        if (str) {
+            self.showPropertiesFor(str);
+        }
+    }));
+    var scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._hierarchyList);
+    pane.add(scroller);
+}
+
+
+#createWidgets:
+function (master) {
+    this.createHierarchyList(master);
+    this.doSuper(arguments, master);
+}
+
+
+#currentClass:
+function anonymous() {
+    return this._currentClass;
+}
+
+
+#hierarchyList:
+function anonymous() {
+    return this._hierarchyList;
+}
+
+
+#initialize:
+function (obj) {
+    this._currentClass = obj ? obj.klass() : null;
+    this.doSuper(arguments, obj);
+}
+
+
+#refresh:
+function () {
+    this.refreshProperties();
+    this.refreshHierarchy();
+}
+
+
+#refreshHierarchy:
+function () {
+    var klass = this._obj.klass();
+    var model = this._hierarchyList.getModel();
+    var node;
+    var child;
+    while (klass) {
+        node = pkg.javax.swing.tree.DefaultMutableTreeNode(klass.className());
+        if (child) {
+            node.add(child);
+        }
+        child = node;
+        klass = klass.superclass();
+    }
+    model.setRoot(node);
+}
+
+
+#refreshProperties:
+function () {
+    this._refreshing = true;
+    var sel = this._list.selectedProperty();
+    this._list.clearProperties();
+    this._list.addInAll("this");
+    var props = this._obj.isClass() ? this._currentClass.methods().sort() : this._currentClass.instanceMethods().sort();
+    for (var i = 0; i < props.length; i++) {
+        this._list.addMethodProperty(props[i]);
+    }
+    props = this._obj.isClass() ? this._currentClass.attributes().sort() : this._currentClass.instanceAttributes().sort();
+    for (var i = 0; i < props.length; i++) {
+        this._list.addAttributeProperty("_" + props[i]);
+    }
+    var arr = [];
+    for (prop in this._obj) { //list all!
+        arr.push(prop);
+    }
+    props = arr.sort();
+    for (var i = 0; i < props.length; i++) {
+        this._list.addProperty(props[i]);
+    }
+    if (sel) {
+        this._list.setSelectedProperty(sel);
+    }
+    this._refreshing = false;
+}
+
+
+#setCurrentClass:
+function anonymous(currentClass) {
+    this._currentClass = currentClass;
+}
+
+
+#setHierarchyList:
+function anonymous(hierarchyList) {
+    this._hierarchyList = hierarchyList;
+}
+
+
+#showPropertiesFor:
+function (str) {
+    this._currentClass = $global[str];
+    this.refreshProperties();
+}
+
+
+

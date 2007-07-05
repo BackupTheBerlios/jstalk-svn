@@ -1,0 +1,113 @@
+name: PropertyList
+superclass: JSObject
+space: BasicInspector
+attributes: [model,widget,inspector]
+class_attributes: []
+doc: ""
+
+#model:
+function anonymous() {
+    return this._model;
+}
+
+
+#setModel:
+function anonymous(model) {
+    this._model = model;
+}
+
+
+#widget:
+function anonymous() {
+    return this._widget;
+}
+
+
+#setWidget:
+function anonymous(widget) {
+    this._widget = widget;
+}
+
+
+#inspector:
+function anonymous() {
+    return this._inspector;
+}
+
+
+#setInspector:
+function anonymous(inspector) {
+    this._inspector = inspector;
+}
+
+
+#selectedProperty:
+function () {
+    var ret = this._widget.getSelectedValue();
+    return ret ? ret.toString() : null;
+}
+
+
+#setSelectedProperty:
+function (val) {
+    this._widget.setSelectedValue(val, true);
+}
+
+
+#clearProperties:
+function () {
+    this._model.clear();
+}
+
+
+#addProperty:
+function (propname) {
+    this._model.addElement(propname);
+}
+
+
+#createEvents:
+function () {
+    var self = this;
+
+    // List events
+    this._widget.addListSelectionListener(JavaEvent.create(function (e) {
+        //updates the valueArea with the value of the selected property
+
+        //prevents lock when _refreshing the list (wich triggers this event)
+        //TODO: makes refresh() remove the listener, process and reset the listener
+        //this method shouldn`t know about the lock
+
+        if (self._inspector.refreshing()) {
+            return;
+        }
+        if (!e.valueIsAdjusting) {
+            var prop = self.selectedProperty();
+            self._inspector.showPropertyValue(prop);
+        }
+    }));
+    this._widget.addMouseListener(JavaEvent.create(function (e) {
+        if (e.getID() == java.awt.event.MouseEvent.MOUSE_CLICKED && e.getClickCount() == 2) {
+            //handle double click
+            var prop = self.selectedProperty();
+            if (prop == "this") {
+                self._inspector.klass().create(self._inspector.obj()).show();
+            } else {
+                self._inspector.klass().create(self._inspector.obj()[prop]).show();
+            }
+        }
+    }));
+}
+
+
+#initialize:
+function (inspector) {
+    this._inspector = inspector;
+    this._model = new pkg.javax.swing.DefaultListModel;
+    this._widget = new pkg.javax.swing.JList(this._model);
+    this._widget.setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    this.createEvents();
+}
+
+
+

@@ -1,0 +1,466 @@
+name: JSObject
+superclass: Object
+space: null
+attributes: [klass]
+class_attributes: [attributes,methods,name,superclass,klass,ctor,template,proto,doc,instanceAttributes,instanceMethods,ownedClasses,space,subclasses]
+doc: "Primordial object class"
+
+>>addOwnedClass:function(klass) {
+
+    this[klass.className()] = klass;
+    this._ownedClasses.pushUnique(klass);
+}
+
+>>addSubclass:function(klass) {
+
+    this._subclasses.pushUnique(klass);
+}
+
+>>attributes:function() {
+
+    return this._attributes;
+}
+
+>>buildAttributes:function(attributes,buildAccessors,buildMutators) {
+
+    for (var i = 0; i < attributes.length; i++) {
+        this.registerAttribute(attributes[i], buildAccessors, buildMutators);
+    }
+}
+
+>>buildClassAttributes:function(attributes,buildMethods) {
+
+    for (var i = 0; i < attributes.length; i++) {
+        this.registerClassAttribute(attributes[i], null, buildMethods);
+    }
+}
+
+>>buildClassProperties:function(props) {
+
+    var keys = props.keys();
+    for (var i = 0; i < keys.length; i++) {
+        this.registerClassMember(keys[i], props[keys[i]]);
+    }
+}
+
+>>buildMethods:function(methods) {
+
+    var keys = methods.keys();
+    for (var i = 0; i < keys.length; i++) {
+        this.registerMethod(keys[i], methods[keys[i]]);
+    }
+}
+
+>>buildProperties:function(props) {
+
+    var keys = props.keys();
+    for (var i = 0; i < keys.length; i++) {
+        this.registerMember(keys[i], props[keys[i]]);
+    }
+}
+
+>>className:function() {
+
+    return this._name;
+}
+
+>>create:function() {
+
+    var obj = new this._proto;
+    if (obj.initialize) {
+        obj.initialize.apply(obj, arguments);
+    }
+    return obj;
+}
+
+>>doc:function() {
+
+    return this._doc;
+}
+
+>>initClassRegistry:function() {
+
+    //initialization of the most basic registries
+    this._methods = new Array;
+    this._attributes = new Array;
+
+    //register them
+    this.registerClassAttribute("attributes");
+    this.registerClassAttribute("methods");
+}
+
+>>initMeta:function(argv) {
+
+    this.registerClassAttribute("name", argv.name);
+    this.registerClassAttribute("superclass", argv.superclass);
+    this.registerClassAttribute("klass", argv.klass);
+    this.registerClassAttribute("ctor", argv.ctor);
+    this.registerClassAttribute("template", argv.template);
+    this.registerClassAttribute("proto", argv.proto);
+    this.registerClassAttribute("doc", argv.doc);
+    this.registerClassAttribute("instanceAttributes", argv.instanceAttributes);
+    this.registerClassAttribute("instanceMethods", argv.instanceMethods);
+    this.registerClassAttribute("ownedClasses", argv.ownedClasses);
+    this.registerClassAttribute("space", argv.space ? argv.space : null);
+    this.registerClassAttribute("subclasses", new Array);
+}
+
+>>initializeClass:function(fklass,klass,argv) {
+
+    var pklass = fklass.prototype;
+
+    var proto = new Function;
+    proto.prototype = new this._proto;
+    proto.prototype._klass = klass;
+
+    //if this is not set before registering class stuff,
+    //hell will be unlished
+    fklass.prototype._ctor = fklass;
+
+
+    pklass._methods = new Array;
+    pklass._attributes = new Array;
+
+    //initialize basic members -- pretty important that ALL of them gets initializated.
+    //Otherwise, we might get an object with its parent info...and things get pretty messy
+
+    pklass._name = argv.name;
+    pklass._superclass = this;
+    pklass._klass = klass;
+    pklass._ctor = fklass;
+    pklass._template = argv;
+    pklass._doc = argv.doc;
+    pklass._proto = proto;
+    pklass._instanceAttributes = new Array;
+    pklass._instanceMethods = new Array;
+    pklass._ownedClasses = new Array;
+    pklass._subclasses = new Array;
+    pklass._space = argv.space;
+    if (argv.class_methods) {
+        pklass.buildClassProperties(argv.class_methods);
+    }
+    if (argv.class_attributes) {
+        pklass.buildClassAttributes(argv.class_attributes, false);
+    }
+    if (argv.class_access_attributes) {
+        pklass.buildClassAttributes(argv.class_access_attributes, true);
+    }
+    if (argv.mixin) {
+        pklass.mixin(argv.mixin);
+    }
+}
+
+>>initializeInstancePrototype:function(klass,argv) {
+
+    if (argv.attributes) {
+        klass.buildAttributes(argv.attributes, false);
+    }
+    if (argv.reader_attributes) {
+        klass.buildAttributes(argv.reader_attributes, true);
+    }
+    if (argv.access_attributes) {
+        klass.buildAttributes(argv.access_attributes, true, true);
+    }
+    if (argv.methods) {
+        klass.buildMethods(argv.methods);
+    }
+}
+
+>>instanceAttributes:function() {
+
+    return this._instanceAttributes;
+}
+
+>>instanceMethod:function(name) {
+
+    return this._proto.prototype[name];
+}
+
+>>instanceMethods:function() {
+
+    return this._instanceMethods;
+}
+
+>>isClass:function() {
+
+    return true;
+}
+
+>>klass:function() {
+
+    return this._klass;
+}
+
+>>method:function(name) {
+
+    if (this.methods().exists(name)) {
+        return this[name];
+    }
+    return null;
+}
+
+>>methods:function() {
+
+    return this._methods;
+}
+
+>>mixin:function(mixins) {
+
+    //mixin methods
+    var methods;
+    for (var i = 0; i < mixins.length; i++) {
+        methods = mixins[i].instanceMethods();
+        for (var m = 0; m < methods.length; m++) {
+            this.registerMethod(methods[m], mixins[i].instanceMethod(methods[m]));
+        }
+    }
+}
+
+>>ownedClasses:function() {
+
+    return this._ownedClasses;
+}
+
+>>proto:function() {
+
+    return this._proto;
+}
+
+>>registerAttribute:function(name,buildAccessors,buildMutators) {
+
+    this.instanceAttributes().pushUnique(name);
+    this._proto.prototype["_" + name] = null;
+    if (buildAccessors) {
+        this.instanceMethods().pushUnique(name);
+        this._proto.prototype[name] = Function("return " + "this._" + name);
+    }
+    if (buildMutators) {
+        var mname = "set" + name[0].toUpperCase() + name.substr(1);
+        this.instanceMethods().pushUnique(mname);
+        this._proto.prototype[mname] = Function(name, "this._" + name + "= " + name);
+    }
+}
+
+>>registerClassAttribute:function(name,value,buildMethods) {
+
+    this.attributes().pushUnique(name);
+
+      /* Note: do not add an 'else here
+         this is necessary to register the
+         class attributes 'attributes' and 'methods'
+         without overwriting them
+      */
+
+
+    if (value !== undefined) {
+        this._ctor.prototype["_" + name] = value;
+    }
+    if (buildMethods) {
+        var mname = "set" + name[0].toUpperCase() + name.substr(1);
+        this.methods().pushUnique(mname);
+        this._ctor.prototype[mname] = Function(name, "this._" + name + "= " + name);
+        this.methods().pushUnique(name);
+        this._ctor.prototype[name] = Function("return " + "this._" + name);
+    }
+}
+
+>>registerClassMember:function(name,value,as) {
+
+    var pname;
+    if (typeof value == "function") {
+        this.methods().pushUnique(name);
+        pname = name;
+    } else {
+        this.attributes().pushUnique(name);
+        pname = "_" + name;
+    }
+    if (value !== undefined) {
+        this._ctor.prototype[pname] = value;
+    }
+}
+
+>>registerClassMethod:function(name,func) {
+
+    if (typeof func == "string") {
+      this.methods().pushUnique(name);
+      this._ctor.prototype[name] = (new Function('return (' + func + ')'))();
+      this._ctor.prototype[name]._source = func
+    } else if (typeof func == "function") {
+      this.methods().pushUnique(name);
+      this._ctor.prototype[name] = func;
+    } else {
+      throw "No function given to JSObject.registerClassMethod. (" + typeof func + ")";
+    }
+}
+
+>>registerMember:function(name,value) {
+
+    var array = null;
+    if (typeof value == "function") {
+        array = this.instanceMethods();
+    } else {
+        array = this.instanceAttributes();
+    }
+    array.pushUnique(name);
+    this._proto.prototype[name] = value;
+}
+
+>>registerMethod:function(name,func) {
+
+    if (typeof func == "string") {
+      this.instanceMethods().pushUnique(name);
+      this._proto.prototype[name] = (new Function('return (' + func + ')'))();
+      this._proto.prototype[name]._source = func
+    } else if (typeof func == "function") {
+      this.instanceMethods().pushUnique(name);
+      this._proto.prototype[name] = func;
+    } else {
+      throw "No function given to JSObject.registerMethod. (" + typeof func + ")";
+    }
+}
+
+>>remove:function() {
+    //delete this class from the system
+
+    if (this.space()) {
+        //remove my reference in my space
+        this.space().removeOwnedClass(this);
+    } else {
+        //remove my reference in the global context
+        delete $global[this.className()];
+    }
+    //remove my subclasses
+    this.subclasses().each(function (z) {
+        z.remove();
+    });
+    //remove my entry in my superclass
+    this.superclass().subclasses().remove(this);
+    //remove my entry in the system dict
+    System.dictionary().removeClass(this.className());
+}
+
+>>removeAttribute:function(name) {
+
+    this.instanceAttributes().remove(name);
+
+    //prop
+    delete this._proto.prototype["_" + name];
+
+    //getter
+    delete this._proto.prototype[name];
+
+    //setter
+    delete this._proto.prototype["set" + name[0].toUpperCase() + name.substr(1)];
+}
+
+>>removeMethod:function(name) {
+
+    this.instanceMethods().remove(name);
+    delete this._proto.prototype[name];
+}
+
+>>removeOwnedClass:function(klass) {
+
+    if (this[klass.className()]) {
+        this._ownedClasses.remove(klass);
+    }
+    delete this[klass.className()];
+}
+
+>>setAttributes:function(attrs) {
+
+    var diff = this.instanceAttributes().diff(attrs);
+    for (var i = 0; i < diff.removed.length; i++) {
+        this.removeAttribute(diff.removed[i]);
+    }
+    for (var i = 0; i < diff.added.length; i++) {
+        this.registerAttribute(diff.added[i]);
+    }
+}
+
+>>simpleDeclaration:function() {
+
+    return "name: '" + this.className() + "',\n" + "superclass: " + (this.superclass() ? this.superclass().className() : "null") + ",\n" + "space: " + (this.space() ? this.space().className() : "null") + ",\n" + "attributes: " + this.instanceAttributes().toSource() + ",\n" + "class_attributes: " + this.attributes().toSource() + ",\n" + "doc: " + this.doc().rep();
+}
+
+>>simpleTemplateDeclaration:function() {
+
+    return "name: 'MyClassName',\n" + "superclass: JSObject, \n" + "space: null,\n" + "attributes: [],\n" + "class_attributes: [],\n" + "mixin: [],\n" + "doc: ''";
+}
+
+>>space:function() {
+
+    return this._space;
+}
+
+>>subclass:function(argv,preventRegister) {
+
+    var fklass = new Function;
+    fklass.prototype = new this._ctor;
+    var klass = new fklass;
+    this.initializeClass(fklass, klass, argv);
+    this.initializeInstancePrototype(klass, argv);
+    if (argv.space) {
+        argv.space.addOwnedClass(klass);
+    } else {
+        $global[klass.className()] = klass;
+    }
+    if (!preventRegister && !argv.space) {
+        System.dictionary().registerClass(argv.name);
+    }
+    this.addSubclass(klass);
+    return klass;
+}
+
+>>subclasses:function() {
+
+    return this._subclasses;
+}
+
+>>superclass:function() {
+
+    return this._superclass;
+}
+
+>>template:function() {
+
+    return this._template;
+}
+
+#attributes:function() {
+
+    return this.klass().instanceAttributes();
+}
+
+#doSuper:function(_farguments) {
+
+    var methods = this.methods();
+    var psuper;
+    for (var i = 0; i < methods.length; i++) {
+        psuper = this.klass().superclass().proto().prototype[methods[i]];
+        if (this[methods[i]] == _farguments.callee && psuper) {
+            var args = [];
+            for (var j = 1; j < arguments.length; j++) {
+                args.push(arguments[j]);
+            }
+            psuper.apply(this, args);
+        }
+    }
+}
+
+#isClass:function() {
+
+    return false;
+}
+
+#klass:function() {
+
+    return this._klass;
+}
+
+#methods:function() {
+
+    return this.klass().instanceMethods();
+}
+
+

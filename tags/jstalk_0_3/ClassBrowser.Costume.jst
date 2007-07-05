@@ -1,0 +1,188 @@
+name: Costume
+superclass: JSObject
+space: ClassBrowser
+attributes: [frame,classTreeView,spaceList,methodList,codeArea,classBrowser]
+class_attributes: []
+doc: ""
+
+#frame:
+function anonymous() {
+    return this._frame;
+}
+
+
+#setFrame:
+function anonymous(frame) {
+    this._frame = frame;
+}
+
+
+#classTreeView:
+function anonymous() {
+    return this._classTreeView;
+}
+
+
+#setClassTreeView:
+function anonymous(classTreeView) {
+    this._classTreeView = classTreeView;
+}
+
+
+#spaceList:
+function anonymous() {
+    return this._spaceList;
+}
+
+
+#setSpaceList:
+function anonymous(spaceList) {
+    this._spaceList = spaceList;
+}
+
+
+#methodList:
+function anonymous() {
+    return this._methodList;
+}
+
+
+#setMethodList:
+function anonymous(methodList) {
+    this._methodList = methodList;
+}
+
+
+#codeArea:
+function anonymous() {
+    return this._codeArea;
+}
+
+
+#setCodeArea:
+function anonymous(codeArea) {
+    this._codeArea = codeArea;
+}
+
+
+#classBrowser:
+function anonymous() {
+    return this._classBrowser;
+}
+
+
+#setClassBrowser:
+function anonymous(classBrowser) {
+    this._classBrowser = classBrowser;
+}
+
+
+#initialize:
+function (classBrowser) {
+    this._classBrowser = classBrowser;
+    this._frame = new pkg.javax.swing.JFrame();
+    this._frame.setSize(500, 500);
+    this._frame.setTitle("Class Browser");
+    var master = this._frame.getContentPane();
+    master.setLayout(new java.awt.GridBagLayout());
+    ctr = new java.awt.GridBagConstraints();
+    ctr.fill = java.awt.GridBagConstraints.BOTH;
+
+    //tree view
+    this._classTreeView = classBrowser.klass().ClassTreeView.create(classBrowser);
+    var scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._classTreeView.widget());
+    ctr.weightx = 1;
+    ctr.weighty = 1;
+    ctr.gridx = 0;
+    ctr.gridy = 0;
+    ctr.gridheight = 2;
+    master.add(scroller, ctr);
+
+    //spaceList
+    this._spaceList = classBrowser.klass().SpaceList.create(classBrowser);
+    scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._spaceList.widget());
+    ctr.weightx = 1;
+    ctr.weighty = 1;
+    ctr.gridx = 1;
+    ctr.gridy = 0;
+    ctr.gridheight = 2;
+    master.add(scroller, ctr);
+
+    //methodList
+    this._methodList = classBrowser.klass().MethodList.create(classBrowser);
+    ctr.weightx = 0.01;
+    ctr.weighty = 0.01;
+    ctr.gridx = 2;
+    ctr.gridy = 0;
+    ctr.gridheight = 1;
+    ctr.ipady = 0.1;
+    master.add(this._methodList.instanceButton(), ctr);
+    ctr.weightx = 0.01;
+    ctr.weighty = 0.01;
+    ctr.gridx = 3;
+    ctr.gridy = 0;
+    ctr.gridheight = 1;
+    ctr.ipady = 0.1;
+    master.add(this._methodList.classButton(), ctr);
+    scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._methodList.widget());
+    ctr.weightx = 1;
+    ctr.weighty = 1;
+    ctr.gridx = 2;
+    ctr.gridy = 1;
+    ctr.gridheight = 1;
+    ctr.gridwidth = 2;
+    master.add(scroller, ctr);
+
+    //code area
+    this._codeArea = JSTextArea.create();
+    this._codeArea.widget().registerKeyboardAction(JavaEvent.create(function (e) {
+        classBrowser.doIt();
+    }), pkg.javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false), pkg.javax.swing.JComponent.WHEN_FOCUSED);
+    this._codeArea.widget().registerKeyboardAction(JavaEvent.create(function (e) {
+        classBrowser.printIt();
+    }), pkg.javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false), pkg.javax.swing.JComponent.WHEN_FOCUSED);
+    this._codeArea.widget().registerKeyboardAction(JavaEvent.create(function (e) {
+        classBrowser.inspectIt();
+    }), pkg.javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false), pkg.javax.swing.JComponent.WHEN_FOCUSED);
+    this._codeArea.widget().registerKeyboardAction(JavaEvent.create(function (e) {
+        classBrowser.accept();
+    }), pkg.javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false), pkg.javax.swing.JComponent.WHEN_FOCUSED);
+    scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._codeArea.widget());
+    ctr.gridx = 0;
+    ctr.gridy = 2;
+    ctr.gridwidth = 4;
+    master.add(scroller, ctr);
+}
+
+
+#refresh:
+function () {
+    this._classTreeView.refresh();
+    this._spaceList.refresh();
+    this._methodList.refresh();
+}
+
+
+#displayCode:
+function (str) {
+    this._codeArea.widget().setText(str);
+}
+
+
+#show:
+function () {
+    this._frame.setVisible(true);
+}
+
+
+#setTitle:
+function (title) {
+    this._frame.setTitle("ClassBrowser [" + title + "]");
+}
+
+
+
