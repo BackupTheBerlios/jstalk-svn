@@ -17,7 +17,7 @@ JSTalk
       $ ./jstak.sh
 
     You can also execute JSTalk with a custom version of Rhino. To do this,
-    edit the file jstalk-rhino.js and chage the command line making sure
+    edit the file jstalk-rhino.js and change the command line making sure
     that Rhino (js.jar last time I checked) is in your classpath. Then,
     execute jstalk-rhino.js
 
@@ -29,7 +29,7 @@ JSTalk
 
     o Workspace
 
-      First, there is the Workspace (It is the first dialog that pops up). It 
+      First, there is the Workspace (it is the first dialog that pops up). It 
       has a textarea where you can type in JS code, select and execute them with
       "Do it" (CTRL+D), "Print it" (CTRL+P), and "Inspect it" (CTRL+I).
   
@@ -64,7 +64,6 @@ JSTalk
 
       To inspect the Workspace object, for instance, we execute the following
       code
-
         
 
         Inspector.inspect(Workspace.windows()[0])
@@ -78,8 +77,8 @@ JSTalk
 
     o ClassBrowser
 
-     The ClassBrowser is where we define easily new classes. It shows
-     all classes loaded, their methods and their hierarchy. 
+     The ClassBrowser is where we easily define new classes. It shows
+     all classes loaded, their methods and hierarchy. 
 
      To commit the code typed in the code area, use the 'Accept' command
      (CTRL+S)
@@ -92,9 +91,9 @@ JSTalk
       All JSTalk classes are contained in .jst files. These are files
       with a custom notation wich are parsed and loaded by the $ClassLoader
       object. The main reason I made this (instead of having regular .js 
-      files with pure JavaScript) is because JavaScript functions don't 
-      remember their comments. Parsing a file to have the functions as text
-      allowed me to record the original source text.
+      files with pure JavaScript) is because JavaScript function objects
+      don't remember their comments. Parsing a file to have the functions 
+      as text allowed me to record the original source text.
 
     o JavaScript classes?
 
@@ -126,7 +125,7 @@ JSTalk
 
       Is worth mentioning that JSObject (and every other class) is not
       a function object, so they are not JS constructors. Therefore 
-      you can not apply "new" to them:
+      you cannot apply "new" to them:
 
 
         o = new JSObject; //error!
@@ -163,8 +162,8 @@ JSTalk
 
       And, to have the class loaded automatically, edit the method 
       SystemDictionary#loadClasses and add your class there (don't
-      forget to fileout the class SystemDictionary)
-      
+      forget to fileout the class SystemDictionary afterwards)
+
 
   * Feedback
 
@@ -174,3 +173,4 @@ JSTalk
 -----------------------------------------------
 Author: Thiago Silva <tsilva@sourcecraft.info>
 Date: 07/04/2007
+
