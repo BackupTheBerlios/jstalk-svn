@@ -26,7 +26,6 @@ function(name,text) {
 
 #buildFileName:
 function(klass) {
-    //that does this
     var name = klass.className();
     return (klass.space() ? klass.space().className() + "." + name : name) + ".jst";
 }
@@ -47,8 +46,6 @@ function(klass) {
 
 #buildSource:
 function(klass) {
-    //returns the class declaration in jst
-
     var txt = "";
     txt += "name: " + klass.className() + "\n";
     txt += "superclass: " + klass.superclass().className() + "\n";
