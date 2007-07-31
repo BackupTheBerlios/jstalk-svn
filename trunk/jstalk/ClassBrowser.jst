@@ -131,7 +131,11 @@ function() {
 
 #removeCurrentMethod:
 function() {
-    this._currentClass.removeMethod(this._currentMethodName);
+    if (this._costume.methodList().classToggled()) {
+        this._currentClass.removeClassMethod(this._currentMethodName);
+    } else {
+        this._currentClass.removeMethod(this._currentMethodName); 
+    }
     this._costume.refresh();
 }
 
