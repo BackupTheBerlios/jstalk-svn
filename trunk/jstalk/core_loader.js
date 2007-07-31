@@ -647,7 +647,7 @@ $pps.fbody = function(idx) {
               | T_OPEN_BRACKET (fbody)* T_CLOSE_BRACKET)*
 */
 
-  var end
+  var end = -1
   var str = ''
   var found
   do {
@@ -667,8 +667,10 @@ $pps.fbody = function(idx) {
     }
   } while(found)
 
-  if (idx != -1) {
+  if (idx != -1 && end != -1) {
     return this.lexer.txt.substring(idx, end)
+  } else {
+    return ''
   }
 }
 
@@ -687,12 +689,17 @@ $ClassLoader.load = function(className, preventRegister) {
 
   var parser = new $Parser(new $Lexer(className + '.jst'))
   var cdecl = parser.jst_class()
-
+ 
+  var klass
   if (className == 'JSObject') {
-    $ClassLoader.loadJSObject(cdecl)
+    klass = $ClassLoader.loadJSObject(cdecl)    
   } else {
-    $ClassLoader.loadOther(cdecl, preventRegister)
+    klass = $ClassLoader.loadOther(cdecl, preventRegister)
   }
+ 
+//  if (klass.initialize) {
+//    klass.initialize()
+//  }
 }
 
 $ClassLoader.loadJSObject = function(cdecl) {
@@ -706,7 +713,7 @@ $ClassLoader.loadJSObject = function(cdecl) {
     instanceMethods[cdecl.methods[i].name] = cdecl.methods[i].body
   }
 
-  $ClassLoader.setupJSObject(cdecl, classMethods, instanceMethods)
+  return $ClassLoader.setupJSObject(cdecl, classMethods, instanceMethods)
 }
 
 $ClassLoader.setupJSObject = function(cdecl, classMethods, instanceMethods) {
@@ -761,6 +768,7 @@ $ClassLoader.setupJSObject = function(cdecl, classMethods, instanceMethods) {
   for (var i = 0; i < keys.length; i++) {
     pklass.registerMethod(keys[i], instanceMethods[keys[i]])
   }
+  return klass
 }
 
 $ClassLoader.loadOther = function(cdecl, preventRegister) {
@@ -791,12 +799,17 @@ $ClassLoader.loadOther = function(cdecl, preventRegister) {
   var klass = space?space[cdecl.name]:$global[cdecl.name]
 
   var methods = cdecl.class_methods
-  for (var i = 0; i < methods.length; i++) {
-    klass.registerClassMethod(methods[i].name, methods[i].body)
+  if (methods) {
+    for (var i = 0; i < methods.length; i++) {
+      klass.registerClassMethod(methods[i].name, methods[i].body)
+    }
   }
 
   methods = cdecl.methods
-  for (var i = 0; i < methods.length; i++) {
-    klass.registerMethod(methods[i].name, methods[i].body)
+  if (methods) {
+    for (var i = 0; i < methods.length; i++) {
+      klass.registerMethod(methods[i].name, methods[i].body)
+    }
   }
+  return klass
 }

@@ -9,6 +9,10 @@ function puts(str) {
   }
 }
 
+function xputs(str) {
+  pkg.javax.swing.JOptionPane.showMessageDialog(null, str)
+}
+
 //basics
 Object.prototype.klass        = function() { return Object }
 Object.prototype.methods      = function() {return []}
@@ -75,8 +79,12 @@ String.className              = function() { return this.name }
 String.klass                  = function() { return String }
 
 String.prototype.rep = function() {
-  var str = '"' + this.replace(new RegExp('"', 'g'), "'") + '"';
-  return str.replace(new RegExp("\n", 'g'), "\\n")
+  var str = this.replace(new RegExp("\\\\", 'g'), "\\\\")
+  str     = str.replace(new RegExp('"', 'g'), "\\\"") 
+  str = str.replace(new RegExp("\n", 'g'), "\\n") 
+
+  
+  return '"' + str + '"';  
 }
 
 

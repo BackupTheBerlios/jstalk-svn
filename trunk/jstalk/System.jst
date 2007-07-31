@@ -5,6 +5,13 @@ attributes: []
 class_attributes: [dictionary]
 doc: "JSTalk system"
 
+>>boot:
+function() {
+  this._dictionary = SystemDictionary.create()
+  this._dictionary.loadClasses();
+  this.initEnvironment()
+}
+
 >>dictionary:
 function() {
   return this._dictionary
@@ -13,13 +20,6 @@ function() {
 >>initEnvironment:
 function() {
   Workspace.open();
-}
-
->>initialize:
-function() {
-  this._dictionary = SystemDictionary.create()
-  this._dictionary.loadClasses();
-  this.initEnvironment()
 }
 
 

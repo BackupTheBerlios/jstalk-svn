@@ -83,10 +83,35 @@ function() {
     return obj;
 }
 
+>>doSuper:
+function(_farguments) {
+
+    var methods = this.methods();
+    var psuper;
+    for (var i = 0; i < methods.length; i++) {
+        psuper = this.klass().superclass()._ctor.prototype[methods[i]];
+        if (this[methods[i]] == _farguments.callee && psuper) {
+            var args = [];
+            for (var j = 1; j < arguments.length; j++) {
+                args.push(arguments[j]);
+            }
+            psuper.apply(this, args);
+        }
+    }
+}
+
 >>doc:
 function() {
 
     return this._doc;
+}
+
+>>hasClassMethod:
+function(name) {
+   this.methods().each(function (fname) {
+      if (name == fname) { return true }
+   })
+   return false
 }
 
 >>initClassRegistry:
@@ -143,7 +168,7 @@ function(fklass,klass,argv) {
     pklass._klass = klass;
     pklass._ctor = fklass;
     pklass._template = argv;
-    pklass._doc = argv.doc;
+    pklass._doc = argv.doc ? argv.doc: '';
     pklass._proto = proto;
     pklass._instanceAttributes = new Array;
     pklass._instanceMethods = new Array;
@@ -386,6 +411,12 @@ function(name) {
     delete this._proto.prototype["set" + name[0].toUpperCase() + name.substr(1)];
 }
 
+>>removeClassMethod:
+function(name) {
+    this.methods().remove(name);
+    delete this._ctor.prototype[name];
+}
+
 >>removeMethod:
 function(name) {
 
@@ -434,7 +465,6 @@ function() {
 
 >>subclass:
 function(argv,preventRegister) {
-
     var fklass = new Function;
     fklass.prototype = new this._ctor;
     var klass = new fklass;
@@ -449,6 +479,10 @@ function(argv,preventRegister) {
         System.dictionary().registerClass(klass);
     }
     this.addSubclass(klass);
+
+    if (klass.hasClassMethod('initialize')) { 
+        klass.initialize();
+    }
     return klass;
 }
 
