@@ -54,14 +54,14 @@ function(classBrowser) {
             self._widget.setSelectedIndex(self._widget.locationToIndex(e.getPoint()));
             var menu = new pkg.javax.swing.JPopupMenu();
             var mi = new pkg.javax.swing.JMenuItem("Add method");
-            mi.addActionListener(function () {
+            mi.addActionListener(JavaEvent.create(function () {
                 self._classBrowser.addMethod(self._instanceButton.isSelected());
-            });
+            }));
             menu.add(mi);
             mi = new pkg.javax.swing.JMenuItem("Remove");
-            mi.addActionListener(function () {
+            mi.addActionListener(JavaEvent.create(function () {
                 self._classBrowser.removeCurrentMethod();
-            });
+            }));
             menu.add(mi);
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
