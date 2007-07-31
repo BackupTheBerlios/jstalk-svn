@@ -1,48 +1,42 @@
 name: ClassTreeView
 superclass: JSObject
 space: ClassBrowser
-attributes: [widget,currentClass,refreshing]
+attributes: [currentClass,refreshing,widget]
 class_attributes: []
 doc: ""
 
 #widget:
-function anonymous() {
+function() {
     return this._widget;
 }
 
-
 #setWidget:
-function anonymous(widget) {
+function(widget) {
     this._widget = widget;
 }
 
-
 #currentClass:
-function anonymous() {
+function() {
     return this._currentClass;
 }
 
-
 #setCurrentClass:
-function anonymous(currentClass) {
+function(currentClass) {
     this._currentClass = currentClass;
 }
 
-
 #refreshing:
-function anonymous() {
+function() {
     return this._refreshing;
 }
 
-
 #setRefreshing:
-function anonymous(refreshing) {
+function(refreshing) {
     this._refreshing = refreshing;
 }
 
-
 #refresh:
-function () {
+function() {
     this._refreshing = true;
     var root = new pkg.javax.swing.tree.DefaultMutableTreeNode(JSObject.className());
     var loadChildren = function (root, klass) {
@@ -63,9 +57,8 @@ function () {
     this._refreshing = false;
 }
 
-
 #initialize:
-function (classBrowser) {
+function(classBrowser) {
     var self = this;
     this._widget = new pkg.javax.swing.JTree();
     this._widget.getSelectionModel().setSelectionMode(pkg.javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -80,6 +73,5 @@ function (classBrowser) {
         classBrowser.selectClass(self._currentClass, true);
     }));
 }
-
 
 

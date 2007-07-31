@@ -5,15 +5,8 @@ attributes: []
 class_attributes: [dictionary]
 doc: "JSTalk system"
 
->>initialize:
-function () {
-  this._dictionary = SystemDictionary.create()
-  this._dictionary.loadClasses();
-  this.initEnvironment()
-}
-
 >>dictionary:
-function () {
+function() {
   return this._dictionary
 }
 
@@ -21,4 +14,12 @@ function () {
 function() {
   Workspace.open();
 }
+
+>>initialize:
+function() {
+  this._dictionary = SystemDictionary.create()
+  this._dictionary.loadClasses();
+  this.initEnvironment()
+}
+
 

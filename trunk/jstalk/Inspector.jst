@@ -1,12 +1,12 @@
 name: Inspector
 superclass: BasicInspector
 space: null
-attributes: [hierarchyList,currentClass]
+attributes: [currentClass,hierarchyList]
 class_attributes: []
 doc: "Elaborated Inspector utility"
 
 #createHierarchyList:
-function (pane) {
+function(pane) {
     this._hierarchyList = new pkg.javax.swing.JTree();
     this._hierarchyList.getSelectionModel().setSelectionMode(pkg.javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION);
     var self = this;
@@ -21,42 +21,36 @@ function (pane) {
     pane.add(scroller);
 }
 
-
 #createWidgets:
-function (master) {
+function(master) {
     this.createHierarchyList(master);
     this.doSuper(arguments, master);
 }
 
-
 #currentClass:
-function anonymous() {
+function() {
     return this._currentClass;
 }
 
-
 #hierarchyList:
-function anonymous() {
+function() {
     return this._hierarchyList;
 }
 
-
 #initialize:
-function (obj) {
+function(obj) {
     this._currentClass = obj ? obj.klass() : null;
     this.doSuper(arguments, obj);
 }
 
-
 #refresh:
-function () {
+function() {
     this.refreshProperties();
     this.refreshHierarchy();
 }
 
-
 #refreshHierarchy:
-function () {
+function() {
     var klass = this._obj.klass();
     var model = this._hierarchyList.getModel();
     var node;
@@ -72,9 +66,8 @@ function () {
     model.setRoot(node);
 }
 
-
 #refreshProperties:
-function () {
+function() {
     this._refreshing = true;
     var sel = this._list.selectedProperty();
     this._list.clearProperties();
@@ -101,24 +94,20 @@ function () {
     this._refreshing = false;
 }
 
-
 #setCurrentClass:
-function anonymous(currentClass) {
+function(currentClass) {
     this._currentClass = currentClass;
 }
 
-
 #setHierarchyList:
-function anonymous(hierarchyList) {
+function(hierarchyList) {
     this._hierarchyList = hierarchyList;
 }
 
-
 #showPropertiesFor:
-function (str) {
+function(str) {
     this._currentClass = $global[str];
     this.refreshProperties();
 }
-
 
 

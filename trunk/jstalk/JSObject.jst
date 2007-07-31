@@ -2,40 +2,46 @@ name: JSObject
 superclass: Object
 space: null
 attributes: [klass]
-class_attributes: [attributes,methods,name,superclass,klass,ctor,template,proto,doc,instanceAttributes,instanceMethods,ownedClasses,space,subclasses]
+class_attributes: [attributes,ctor,doc,instanceAttributes,instanceMethods,klass,methods,name,ownedClasses,proto,space,subclasses,superclass,template]
 doc: "Primordial object class"
 
->>addOwnedClass:function(klass) {
+>>addOwnedClass:
+function(klass) {
 
     this[klass.className()] = klass;
     this._ownedClasses.pushUnique(klass);
 }
 
->>addSubclass:function(klass) {
+>>addSubclass:
+function(klass) {
 
     this._subclasses.pushUnique(klass);
 }
 
->>attributes:function() {
+>>attributes:
+function() {
 
     return this._attributes;
 }
 
->>buildAttributes:function(attributes,buildAccessors,buildMutators) {
+>>buildAttributes:
+function(attributes,buildAccessors,buildMutators) {
 
     for (var i = 0; i < attributes.length; i++) {
         this.registerAttribute(attributes[i], buildAccessors, buildMutators);
     }
 }
 
->>buildClassAttributes:function(attributes,buildMethods) {
+>>buildClassAttributes:
+function(attributes,buildMethods) {
 
     for (var i = 0; i < attributes.length; i++) {
         this.registerClassAttribute(attributes[i], null, buildMethods);
     }
 }
 
->>buildClassProperties:function(props) {
+>>buildClassProperties:
+function(props) {
 
     var keys = props.keys();
     for (var i = 0; i < keys.length; i++) {
@@ -43,7 +49,8 @@ doc: "Primordial object class"
     }
 }
 
->>buildMethods:function(methods) {
+>>buildMethods:
+function(methods) {
 
     var keys = methods.keys();
     for (var i = 0; i < keys.length; i++) {
@@ -51,7 +58,8 @@ doc: "Primordial object class"
     }
 }
 
->>buildProperties:function(props) {
+>>buildProperties:
+function(props) {
 
     var keys = props.keys();
     for (var i = 0; i < keys.length; i++) {
@@ -59,12 +67,14 @@ doc: "Primordial object class"
     }
 }
 
->>className:function() {
+>>className:
+function() {
 
     return this._name;
 }
 
->>create:function() {
+>>create:
+function() {
 
     var obj = new this._proto;
     if (obj.initialize) {
@@ -73,12 +83,14 @@ doc: "Primordial object class"
     return obj;
 }
 
->>doc:function() {
+>>doc:
+function() {
 
     return this._doc;
 }
 
->>initClassRegistry:function() {
+>>initClassRegistry:
+function() {
 
     //initialization of the most basic registries
     this._methods = new Array;
@@ -89,7 +101,8 @@ doc: "Primordial object class"
     this.registerClassAttribute("methods");
 }
 
->>initMeta:function(argv) {
+>>initMeta:
+function(argv) {
 
     this.registerClassAttribute("name", argv.name);
     this.registerClassAttribute("superclass", argv.superclass);
@@ -105,7 +118,8 @@ doc: "Primordial object class"
     this.registerClassAttribute("subclasses", new Array);
 }
 
->>initializeClass:function(fklass,klass,argv) {
+>>initializeClass:
+function(fklass,klass,argv) {
 
     var pklass = fklass.prototype;
 
@@ -150,7 +164,8 @@ doc: "Primordial object class"
     }
 }
 
->>initializeInstancePrototype:function(klass,argv) {
+>>initializeInstancePrototype:
+function(klass,argv) {
 
     if (argv.attributes) {
         klass.buildAttributes(argv.attributes, false);
@@ -166,32 +181,38 @@ doc: "Primordial object class"
     }
 }
 
->>instanceAttributes:function() {
+>>instanceAttributes:
+function() {
 
     return this._instanceAttributes;
 }
 
->>instanceMethod:function(name) {
+>>instanceMethod:
+function(name) {
 
     return this._proto.prototype[name];
 }
 
->>instanceMethods:function() {
+>>instanceMethods:
+function() {
 
     return this._instanceMethods;
 }
 
->>isClass:function() {
+>>isClass:
+function() {
 
     return true;
 }
 
->>klass:function() {
+>>klass:
+function() {
 
     return this._klass;
 }
 
->>method:function(name) {
+>>method:
+function(name) {
 
     if (this.methods().exists(name)) {
         return this[name];
@@ -199,12 +220,14 @@ doc: "Primordial object class"
     return null;
 }
 
->>methods:function() {
+>>methods:
+function() {
 
     return this._methods;
 }
 
->>mixin:function(mixins) {
+>>mixin:
+function(mixins) {
 
     //mixin methods
     var methods;
@@ -216,17 +239,20 @@ doc: "Primordial object class"
     }
 }
 
->>ownedClasses:function() {
+>>ownedClasses:
+function() {
 
     return this._ownedClasses;
 }
 
->>proto:function() {
+>>proto:
+function() {
 
     return this._proto;
 }
 
->>registerAttribute:function(name,buildAccessors,buildMutators) {
+>>registerAttribute:
+function(name,buildAccessors,buildMutators) {
 
     this.instanceAttributes().pushUnique(name);
     this._proto.prototype["_" + name] = null;
@@ -241,7 +267,8 @@ doc: "Primordial object class"
     }
 }
 
->>registerClassAttribute:function(name,value,buildMethods) {
+>>registerClassAttribute:
+function(name,value,buildMethods) {
 
     this.attributes().pushUnique(name);
 
@@ -264,7 +291,8 @@ doc: "Primordial object class"
     }
 }
 
->>registerClassMember:function(name,value,as) {
+>>registerClassMember:
+function(name,value,as) {
 
     var pname;
     if (typeof value == "function") {
@@ -279,7 +307,8 @@ doc: "Primordial object class"
     }
 }
 
->>registerClassMethod:function(name,func) {
+>>registerClassMethod:
+function(name,func) {
 
     if (typeof func == "string") {
       this.methods().pushUnique(name);
@@ -293,7 +322,8 @@ doc: "Primordial object class"
     }
 }
 
->>registerMember:function(name,value) {
+>>registerMember:
+function(name,value) {
 
     var array = null;
     if (typeof value == "function") {
@@ -305,7 +335,8 @@ doc: "Primordial object class"
     this._proto.prototype[name] = value;
 }
 
->>registerMethod:function(name,func) {
+>>registerMethod:
+function(name,func) {
 
     if (typeof func == "string") {
       this.instanceMethods().pushUnique(name);
@@ -319,7 +350,8 @@ doc: "Primordial object class"
     }
 }
 
->>remove:function() {
+>>remove:
+function() {
     //delete this class from the system
 
     if (this.space()) {
@@ -339,7 +371,8 @@ doc: "Primordial object class"
     System.dictionary().removeClass(this.className());
 }
 
->>removeAttribute:function(name) {
+>>removeAttribute:
+function(name) {
 
     this.instanceAttributes().remove(name);
 
@@ -353,13 +386,15 @@ doc: "Primordial object class"
     delete this._proto.prototype["set" + name[0].toUpperCase() + name.substr(1)];
 }
 
->>removeMethod:function(name) {
+>>removeMethod:
+function(name) {
 
     this.instanceMethods().remove(name);
     delete this._proto.prototype[name];
 }
 
->>removeOwnedClass:function(klass) {
+>>removeOwnedClass:
+function(klass) {
 
     if (this[klass.className()]) {
         this._ownedClasses.remove(klass);
@@ -367,7 +402,8 @@ doc: "Primordial object class"
     delete this[klass.className()];
 }
 
->>setAttributes:function(attrs) {
+>>setAttributes:
+function(attrs) {
 
     var diff = this.instanceAttributes().diff(attrs);
     for (var i = 0; i < diff.removed.length; i++) {
@@ -378,22 +414,26 @@ doc: "Primordial object class"
     }
 }
 
->>simpleDeclaration:function() {
+>>simpleDeclaration:
+function() {
 
     return "name: '" + this.className() + "',\n" + "superclass: " + (this.superclass() ? this.superclass().className() : "null") + ",\n" + "space: " + (this.space() ? this.space().className() : "null") + ",\n" + "attributes: " + this.instanceAttributes().toSource() + ",\n" + "class_attributes: " + this.attributes().toSource() + ",\n" + "doc: " + this.doc().rep();
 }
 
->>simpleTemplateDeclaration:function() {
+>>simpleTemplateDeclaration:
+function() {
 
     return "name: 'MyClassName',\n" + "superclass: JSObject, \n" + "space: null,\n" + "attributes: [],\n" + "class_attributes: [],\n" + "mixin: [],\n" + "doc: ''";
 }
 
->>space:function() {
+>>space:
+function() {
 
     return this._space;
 }
 
->>subclass:function(argv,preventRegister) {
+>>subclass:
+function(argv,preventRegister) {
 
     var fklass = new Function;
     fklass.prototype = new this._ctor;
@@ -405,34 +445,39 @@ doc: "Primordial object class"
     } else {
         $global[klass.className()] = klass;
     }
-    if (!preventRegister && !argv.space) {
-        System.dictionary().registerClass(argv.name);
+    if (!preventRegister) {
+        System.dictionary().registerClass(klass);
     }
     this.addSubclass(klass);
     return klass;
 }
 
->>subclasses:function() {
+>>subclasses:
+function() {
 
     return this._subclasses;
 }
 
->>superclass:function() {
+>>superclass:
+function() {
 
     return this._superclass;
 }
 
->>template:function() {
+>>template:
+function() {
 
     return this._template;
 }
 
-#attributes:function() {
+#isClass:
+function() {
 
-    return this.klass().instanceAttributes();
+    return false;
 }
 
-#doSuper:function(_farguments) {
+#doSuper:
+function(_farguments) {
 
     var methods = this.methods();
     var psuper;
@@ -448,19 +493,22 @@ doc: "Primordial object class"
     }
 }
 
-#isClass:function() {
+#attributes:
+function() {
 
-    return false;
+    return this.klass().instanceAttributes();
 }
 
-#klass:function() {
-
-    return this._klass;
-}
-
-#methods:function() {
+#methods:
+function() {
 
     return this.klass().instanceMethods();
+}
+
+#klass:
+function() {
+
+    return this._klass;
 }
 
 

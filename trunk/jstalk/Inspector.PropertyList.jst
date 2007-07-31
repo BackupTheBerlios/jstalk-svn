@@ -1,87 +1,75 @@
 name: PropertyList
 superclass: JSObject
 space: Inspector
-attributes: [widget,inspector,lists,models]
+attributes: [inspector,lists,models,widget]
 class_attributes: []
 doc: ""
 
 #widget:
-function anonymous() {
+function() {
     return this._widget;
 }
 
-
 #setWidget:
-function anonymous(widget) {
+function(widget) {
     this._widget = widget;
 }
 
-
 #inspector:
-function anonymous() {
+function() {
     return this._inspector;
 }
 
-
 #setInspector:
-function anonymous(inspector) {
+function(inspector) {
     this._inspector = inspector;
 }
 
-
 #lists:
-function anonymous() {
+function() {
     return this._lists;
 }
 
-
 #setLists:
-function anonymous(lists) {
+function(lists) {
     this._lists = lists;
 }
 
-
 #models:
-function anonymous() {
+function() {
     return this._models;
 }
 
-
 #setModels:
-function anonymous(models) {
+function(models) {
     this._models = models;
 }
 
-
 #addAttributeProperty:
-function (prop) {
+function(prop) {
     this._models[0].addElement(prop);
 }
 
-
 #addProperty:
-function (prop) {
+function(prop) {
     this._models[2].addElement(prop);
 }
 
-
 #setSelectedProperty:
-function (val) {
+function(val) {
     var i = this._widget.getSelectedIndex();
     this._lists[i].setSelectedValue(val, true);
 }
 
-
 #clearProperties:
-function () {
+function() {
     for (var i = 0; i < 3; i++) {
         this._models[i].clear();
     }
 }
 
-
 #initialize:
-function (inspector) {
+function(inspector) {
     this._inspector = inspector;
     this._widget = new pkg.javax.swing.JTabbedPane();
     this._lists = new Array(3);
@@ -97,23 +85,20 @@ function (inspector) {
     this.createEvents();
 }
 
-
 #addMethodProperty:
-function (prop) {
+function(prop) {
     this._models[1].addElement(prop);
 }
 
-
 #addInAll:
-function (prop) {
+function(prop) {
     this._models[0].addElement(prop);
     this._models[1].addElement(prop);
     this._models[2].addElement(prop);
 }
 
-
 #createEvents:
-function () {
+function() {
     var self = this;
     slistener = JavaEvent.create(function (e) {
         if (self._inspector.refreshing()) {
@@ -140,13 +125,11 @@ function () {
     }
 }
 
-
 #selectedProperty:
-function () {
+function() {
     var i = this._widget.getSelectedIndex();
     var ret = this._lists[i].getSelectedValue();
     return ret ? ret.toString() : null;
 }
-
 
 

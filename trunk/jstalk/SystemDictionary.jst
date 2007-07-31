@@ -5,13 +5,13 @@ attributes: [classes]
 class_attributes: []
 doc: "System classes"
 
-#classes:function() {
-
+#classes:
+function() {
     return this._classes;
 }
 
-#initialize:function() {
-
+#initialize:
+function() {
     if (!this._classes) {
         this._classes = new Array;
     }
@@ -20,7 +20,8 @@ doc: "System classes"
     this.registerClass(SystemDictionary);
 }
 
-#loadClasses:function() {
+#loadClasses:
+function() {
 
     //teste
     $ClassLoader.load("JSTextArea");
@@ -38,17 +39,20 @@ doc: "System classes"
     $ClassLoader.load("JavaEvent");
 }
 
-#registerClass:function(klass) {
+#registerClass:
+function(klass) {
 
     this._classes.pushUnique(klass);
 }
 
-#removeClass:function(className) {
+#removeClass:
+function(className) {
 
     this._classes.remove(className);
 }
 
-#setClasses:function(classes) {
+#setClasses:
+function(classes) {
 
     this._classes = classes;
 }

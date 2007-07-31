@@ -6,25 +6,22 @@ class_attributes: [windows]
 doc: "System class browser"
 
 >>open:
-function () {
+function() {
     this.create().show();
 }
 
-
 >>setWindows:
-function anonymous(windows) {
+function(windows) {
     this._windows = windows;
 }
 
-
 >>windows:
-function anonymous() {
+function() {
     return this._windows;
 }
 
-
 #accept:
-function () {
+function() {
     if (this._currentMethodName) {
         this.acceptMethod();
     } else {
@@ -33,9 +30,8 @@ function () {
     this._costume.refresh();
 }
 
-
 #acceptClass:
-function () {
+function() {
     var decl = this._costume.codeArea().widget().getText();
     var argv = new Function("return {" + decl + "}")();
     if (this._currentClass && argv.name == this._currentClass.className()) {
@@ -47,9 +43,8 @@ function () {
     }
 }
 
-
 #acceptMethod:
-function () {
+function() {
     if (this._costume.methodList().instanceToggled()) {
         this._currentClass.registerMethod(this._currentMethodName, String(this._costume.codeArea().widget().getText()));
     } else {
@@ -57,9 +52,8 @@ function () {
     }
 }
 
-
 #addMethod:
-function (isInstance) {
+function(isInstance) {
     var func;
     var reg;
     if (isInstance) {
@@ -83,34 +77,29 @@ function (isInstance) {
     this._costume.methodList().selectMethod(name, isInstance);
 }
 
-
 #costume:
-function anonymous() {
+function() {
     return this._costume;
 }
 
-
 #currentClass:
-function anonymous() {
+function() {
     return this._currentClass;
 }
 
-
 #currentMethodName:
-function anonymous() {
+function() {
     return this._currentMethodName;
 }
 
-
 #doIt:
-function () {
+function() {
     this._costume.codeArea().doIt();
     this._costume.refresh();
 }
 
-
 #initialize:
-function () {
+function() {
     //initializing class instance!
     if (!this.klass()._windows) {
         this.klass()._windows = new Array;
@@ -121,38 +110,33 @@ function () {
     this.klass().windows().push(this);
 }
 
-
 #inspectIt:
-function () {
+function() {
     this._costume.codeArea().inspectIt();
     this._costume.refresh();
 }
 
-
 #printIt:
-function () {
+function() {
     this._costume.codeArea().printIt();
     this._costume.refresh();
 }
 
-
 #removeCurrentClass:
-function () {
+function() {
     this._currentClass.remove();
     this._currentClass = null;
     this._costume.refresh();
 }
 
-
 #removeCurrentMethod:
-function () {
+function() {
     this._currentClass.removeMethod(this._currentMethodName);
     this._costume.refresh();
 }
 
-
 #selectClass:
-function (klass, loadSpaceList) {
+function(klass,loadSpaceList) {
     this._currentClass = klass;
     this._currentMethodName = null;
     if (loadSpaceList) {
@@ -164,9 +148,8 @@ function (klass, loadSpaceList) {
     this._costume.setTitle(klass.className());
 }
 
-
 #selectMethod:
-function (name, isInstance) {
+function(name,isInstance) {
     this._currentMethodName = name;
     if (isInstance) {
         this._costume.displayCode(this._currentClass.instanceMethod(name).toSource());
@@ -175,29 +158,24 @@ function (name, isInstance) {
     }
 }
 
-
 #setCostume:
-function anonymous(costume) {
+function(costume) {
     this._costume = costume;
 }
 
-
 #setCurrentClass:
-function anonymous(currentClass) {
+function(currentClass) {
     this._currentClass = currentClass;
 }
 
-
 #setCurrentMethodName:
-function anonymous(currentMethodName) {
+function(currentMethodName) {
     this._currentMethodName = currentMethodName;
 }
 
-
 #show:
-function () {
+function() {
     this._costume.show();
 }
-
 
 

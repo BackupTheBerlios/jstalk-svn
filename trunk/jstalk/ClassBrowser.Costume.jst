@@ -1,84 +1,72 @@
 name: Costume
 superclass: JSObject
 space: ClassBrowser
-attributes: [frame,classTreeView,spaceList,methodList,codeArea,classBrowser]
+attributes: [classBrowser,classTreeView,codeArea,frame,methodList,spaceList]
 class_attributes: []
 doc: ""
 
 #frame:
-function anonymous() {
+function() {
     return this._frame;
 }
 
-
 #setFrame:
-function anonymous(frame) {
+function(frame) {
     this._frame = frame;
 }
 
-
 #classTreeView:
-function anonymous() {
+function() {
     return this._classTreeView;
 }
 
-
 #setClassTreeView:
-function anonymous(classTreeView) {
+function(classTreeView) {
     this._classTreeView = classTreeView;
 }
 
-
 #spaceList:
-function anonymous() {
+function() {
     return this._spaceList;
 }
 
-
 #setSpaceList:
-function anonymous(spaceList) {
+function(spaceList) {
     this._spaceList = spaceList;
 }
 
-
 #methodList:
-function anonymous() {
+function() {
     return this._methodList;
 }
 
-
 #setMethodList:
-function anonymous(methodList) {
+function(methodList) {
     this._methodList = methodList;
 }
 
-
 #codeArea:
-function anonymous() {
+function() {
     return this._codeArea;
 }
 
-
 #setCodeArea:
-function anonymous(codeArea) {
+function(codeArea) {
     this._codeArea = codeArea;
 }
 
-
 #classBrowser:
-function anonymous() {
+function() {
     return this._classBrowser;
 }
 
-
 #setClassBrowser:
-function anonymous(classBrowser) {
+function(classBrowser) {
     this._classBrowser = classBrowser;
 }
 
-
 #initialize:
-function (classBrowser) {
+function(classBrowser) {
     this._classBrowser = classBrowser;
     this._frame = new pkg.javax.swing.JFrame();
     this._frame.setSize(500, 500);
@@ -158,31 +146,26 @@ function (classBrowser) {
     master.add(scroller, ctr);
 }
 
-
 #refresh:
-function () {
+function() {
     this._classTreeView.refresh();
     this._spaceList.refresh();
     this._methodList.refresh();
 }
 
-
 #displayCode:
-function (str) {
+function(str) {
     this._codeArea.widget().setText(str);
 }
 
-
 #show:
-function () {
+function() {
     this._frame.setVisible(true);
 }
 
-
 #setTitle:
-function (title) {
+function(title) {
     this._frame.setTitle("ClassBrowser [" + title + "]");
 }
-
 
 

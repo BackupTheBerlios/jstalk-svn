@@ -5,7 +5,13 @@ attributes: []
 class_attributes: []
 doc: ""
 
-#_write:function(name,text) {
+>>theClass:
+function(klass) {
+  Fileout.create().fileoutClass(klass)
+}
+
+#_write:
+function(name,text) {
     with (new JavaImporter(java.io)) {
         try {
             var out = new BufferedWriter(new FileWriter(name));
@@ -18,37 +24,44 @@ doc: ""
     }
 }
 
-#buildFileName:function(klass) {
+#buildFileName:
+function(klass) {
+    //that does this
     var name = klass.className();
     return (klass.space() ? klass.space().className() + "." + name : name) + ".jst";
 }
 
-#buildMethods:function(klass) {
+#buildMethods:
+function(klass) {
     var txt = "";
     var methods = klass.methods().sort();
     for (var i = 0; i < methods.length; i++) {
-        txt += ">>" + methods[i] + ":" + klass.method(methods[i]).toSource() + "\n\n";
+        txt += ">>" + methods[i] + ":\n" + klass.method(methods[i]).toSource() + "\n\n";
     }
     var methods = klass.instanceMethods();
     for (var i = 0; i < methods.length; i++) {
-        txt += "#" + methods[i] + ":" + klass.instanceMethod(methods[i]).toSource() + "\n\n";
+        txt += "#" + methods[i] + ":\n" + klass.instanceMethod(methods[i]).toSource() + "\n\n";
     }
     return txt;
 }
 
-#buildSource:function(klass) {
+#buildSource:
+function(klass) {
+    //returns the class declaration in jst
+
     var txt = "";
     txt += "name: " + klass.className() + "\n";
     txt += "superclass: " + klass.superclass().className() + "\n";
     txt += "space: " + (klass.space() ? klass.space().className() : "null") + "\n";
-    txt += "attributes: [" + klass.instanceAttributes().join(",") + "]\n";
-    txt += "class_attributes: [" + klass.attributes().join(",") + "]\n";
+    txt += "attributes: [" + klass.instanceAttributes().sort().join(",") + "]\n";
+    txt += "class_attributes: [" + klass.attributes().sort().join(",") + "]\n";
     txt += "doc: " + (klass.doc() ? klass.doc().rep() : "\"\"") + "\n\n";
     txt += this.buildMethods(klass);
     return txt;
 }
 
-#fileoutClass:function(klass) {
+#fileoutClass:
+function(klass) {
     this._write(this.buildFileName(klass), this.buildSource(klass));
 }
 

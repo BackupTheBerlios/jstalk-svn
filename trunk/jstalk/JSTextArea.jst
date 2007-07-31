@@ -6,22 +6,20 @@ class_attributes: []
 doc: ""
 
 #append:
-function (str) {
+function(str) {
     //reset selection when appending printing
     var pos = this._widget.getCaretPosition();
     this._widget.append(str);
     this._widget.select(pos, pos);
 }
 
-
 #clearSelection:
-function () {
+function() {
     this._widget.select(0, 0);
 }
 
-
 #doIt:
-function () {
+function() {
     //transform the selected text into function
     //and execute it in the global scope (ie. 'this' is the Global Object)
     try {
@@ -32,9 +30,8 @@ function () {
     }
 }
 
-
 #evalSelected:
-function () {
+function() {
     var f;
     f = new Function("return eval(" + String(this.selectedCode()).rep() + ")");
     if (!f) {
@@ -44,9 +41,8 @@ function () {
     }
 }
 
-
 #evalText:
-function () {
+function() {
     var f;
     f = new Function("return (" + String(this._widget.getText()) + ")");
     if (!f) {
@@ -56,22 +52,19 @@ function () {
     }
 }
 
-
 #hasSelection:
-function () {
+function() {
     return this._widget.getSelectedText() ? true : false;
 }
 
-
 #initialize:
-function (obj) {
+function(obj) {
     this._targetObj = obj ? obj : $global;
     this._widget = new pkg.javax.swing.JTextArea();
 }
 
-
 #inspectIt:
-function () {
+function() {
     //Evaluate the selected code (should return an object)
     //and opens an inspector to that object
     try {
@@ -85,9 +78,8 @@ function () {
     }
 }
 
-
 #printIt:
-function () {
+function() {
     //Evaluate the selected code (should return an object)
     //and opens an inspector to that object
     try {
@@ -98,37 +90,31 @@ function () {
     }
 }
 
-
 #selectedCode:
-function () {
+function() {
     return this._widget.getSelectedText();
 }
 
-
 #setWidget:
-function anonymous(widget) {
+function(widget) {
     this._widget = widget;
 }
 
-
 #targetObj:
-function anonymous() {
+function() {
     return this._targetObj;
 }
 
-
 #widget:
-function anonymous() {
+function() {
     return this._widget;
 }
 
-
 #writeEvalResult:
-function (txt) {
+function(txt) {
     var pos = this._widget.getSelectionEnd();
     this._widget.insert(txt, pos);
     this._widget.select(pos, pos + String(txt).length);
 }
-
 
 

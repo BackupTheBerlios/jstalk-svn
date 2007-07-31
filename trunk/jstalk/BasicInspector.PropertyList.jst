@@ -1,73 +1,63 @@
 name: PropertyList
 superclass: JSObject
 space: BasicInspector
-attributes: [model,widget,inspector]
+attributes: [inspector,model,widget]
 class_attributes: []
 doc: ""
 
 #model:
-function anonymous() {
+function() {
     return this._model;
 }
 
-
 #setModel:
-function anonymous(model) {
+function(model) {
     this._model = model;
 }
 
-
 #widget:
-function anonymous() {
+function() {
     return this._widget;
 }
 
-
 #setWidget:
-function anonymous(widget) {
+function(widget) {
     this._widget = widget;
 }
 
-
 #inspector:
-function anonymous() {
+function() {
     return this._inspector;
 }
 
-
 #setInspector:
-function anonymous(inspector) {
+function(inspector) {
     this._inspector = inspector;
 }
 
-
 #selectedProperty:
-function () {
+function() {
     var ret = this._widget.getSelectedValue();
     return ret ? ret.toString() : null;
 }
 
-
 #setSelectedProperty:
-function (val) {
+function(val) {
     this._widget.setSelectedValue(val, true);
 }
 
-
 #clearProperties:
-function () {
+function() {
     this._model.clear();
 }
 
-
 #addProperty:
-function (propname) {
+function(propname) {
     this._model.addElement(propname);
 }
 
-
 #createEvents:
-function () {
+function() {
     var self = this;
 
     // List events
@@ -99,15 +89,13 @@ function () {
     }));
 }
 
-
 #initialize:
-function (inspector) {
+function(inspector) {
     this._inspector = inspector;
     this._model = new pkg.javax.swing.DefaultListModel;
     this._widget = new pkg.javax.swing.JList(this._model);
     this._widget.setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
     this.createEvents();
 }
-
 
 

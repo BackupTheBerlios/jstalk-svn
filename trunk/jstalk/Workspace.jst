@@ -6,16 +6,15 @@ class_attributes: [windows]
 doc: "I'm the main tool to program and evaluate code"
 
 >>executeOnActive:
-function (func) {
+function(func) {
     var w = this.firstActiveWindow();
     if (w) {
         func(w);
     }
 }
 
-
 >>firstActiveWindow:
-function () {
+function() {
     var ws = this.windows();
     for (var i = 0; i < ws.length; i++) {
         if (ws[i].isVisible()) {
@@ -25,49 +24,42 @@ function () {
     return null;
 }
 
-
 >>open:
-function () {
+function() {
     this.klass().create().show();
 }
 
-
 >>print:
-function (str) {
+function(str) {
     this.executeOnActive(function (w) {
         w.print(str);
     });
 }
 
-
 >>puts:
-function (str) {
+function(str) {
     this.executeOnActive(function (w) {
         w.puts(str);
     });
 }
 
-
 >>setWindows:
-function (windows) {
+function(windows) {
     this._windows = windows;
 }
 
-
 >>windows:
-function () {
+function() {
     return this._windows;
 }
 
-
 #isVisible:
-function () {
+function() {
     return this._frame.isVisible();
 }
 
-
 #initUI:
-function () {
+function() {
     this._frame = new pkg.javax.swing.JFrame();
     this._frame.setSize(300, 300);
     this._frame.setTitle("Workspace");
@@ -78,15 +70,13 @@ function () {
     this.createMenuBar();
 }
 
-
 #puts:
-function (str) {
+function(str) {
     this.print(str + "\n");
 }
 
-
 #createMenuBar:
-function () {
+function() {
     var self = this;
     var mb = new pkg.javax.swing.JMenuBar();
     var menu = new pkg.javax.swing.JMenu("Tools");
@@ -124,21 +114,18 @@ function () {
     this._frame.setJMenuBar(mb);
 }
 
-
 #print:
-function (str) {
+function(str) {
     this._textarea.append(str);
 }
 
-
 #show:
-function () {
+function() {
     this._frame.setVisible(true);
 }
 
-
 #initialize:
-function () {
+function() {
     //initialize class instances
     if (!this.klass()._windows) {
         this.klass()._windows = new Array;
@@ -146,6 +133,5 @@ function () {
     this.initUI();
     this.klass().windows().push(this);
 }
-
 
 

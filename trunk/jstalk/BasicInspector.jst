@@ -1,38 +1,34 @@
 name: BasicInspector
 superclass: JSObject
 space: null
-attributes: [refreshing,obj,list,frame,valueArea,codeArea]
+attributes: [codeArea,frame,list,obj,refreshing,valueArea]
 class_attributes: [windows]
 doc: "Basic Inspector utility"
 
 >>inspect:
-function (obj) {
+function(obj) {
     this.create(obj).show();
 }
 
-
 >>refreshAll:
-function () {
+function() {
     for (var w = 0; w < this.windows().length; ++w) {
         this.windows()[w].refresh();
     }
 }
 
-
 >>setWindows:
-function anonymous(windows) {
+function(windows) {
     this._windows = windows;
 }
 
-
 >>windows:
-function anonymous() {
+function() {
     return this._windows;
 }
 
-
 #accept:
-function () {
+function() {
     //accepts the text in the valueArea as the value
     //of the selected property in the JList
 
@@ -53,15 +49,13 @@ function () {
     }
 }
 
-
 #codeArea:
-function anonymous() {
+function() {
     return this._codeArea;
 }
 
-
 #createCodeWidget:
-function (pane) {
+function(pane) {
     this._codeArea = JSTextArea.create(this._obj);
     this._codeArea.widget().setMaximumSize(new java.awt.Dimension(java.lang.Integer.MAX_VALUE, 180));
 
@@ -77,26 +71,23 @@ function (pane) {
     pane.add(scroller);
 }
 
-
 #createFrame:
-function () {
+function() {
     var label = this._obj.isClass() ? "[class " + this.obj().className() + "]" : "an " + this._obj.klass().className();
     this._frame = new pkg.javax.swing.JFrame(label);
     this._frame.setSize(300, 300);
 }
 
-
 #createListWidget:
-function (pane) {
+function(pane) {
     this._list = this.klass().PropertyList.create(this);
     var scroller = new pkg.javax.swing.JScrollPane();
     scroller.getViewport().add(this._list.widget());
     pane.add(scroller);
 }
 
-
 #createMenuBar:
-function () {
+function() {
     var self = this;
     var mb = new pkg.javax.swing.JMenuBar();
     var menu = new pkg.javax.swing.JMenu("Tools");
@@ -156,9 +147,8 @@ function () {
     this._frame.setJMenuBar(mb);
 }
 
-
 #createValueWidget:
-function (pane) {
+function(pane) {
     this._valueArea = JSTextArea.create(this._obj);
     this._valueArea.widget().setBorder(pkg.javax.swing.BorderFactory.createEtchedBorder());
     this._valueArea.widget().setLineWrap(true);
@@ -175,9 +165,8 @@ function (pane) {
     pane.add(scroller);
 }
 
-
 #createWidgets:
-function (master) {
+function(master) {
     var toppane = new pkg.javax.swing.JPanel();
     toppane.setLayout(new pkg.javax.swing.BoxLayout(toppane, pkg.javax.swing.BoxLayout.X_AXIS));
     this.createFrame();
@@ -187,9 +176,8 @@ function (master) {
     this.createCodeWidget(master);
 }
 
-
 #currentTextWidget:
-function () {
+function() {
     if (this._valueArea.hasSelection()) {
         return this._valueArea;
     } else {
@@ -197,22 +185,19 @@ function () {
     }
 }
 
-
 #doIt:
-function () {
+function() {
     this.currentTextWidget().doIt();
     this.klass().refreshAll();
 }
 
-
 #frame:
-function anonymous() {
+function() {
     return this._frame;
 }
 
-
 #initUI:
-function () {
+function() {
     var master = new pkg.javax.swing.JPanel();
     master.setLayout(new pkg.javax.swing.BoxLayout(master, pkg.javax.swing.BoxLayout.Y_AXIS));
     this.createWidgets(master);
@@ -220,16 +205,14 @@ function () {
     this.createMenuBar();
 }
 
-
 #initWindow:
-function () {
+function() {
     this.klass().windows().push(this);
     this.klass().refreshAll();
 }
 
-
 #initialize:
-function (obj) {
+function(obj) {
     this._refreshing = false;
 
     //initialize class instances
@@ -241,35 +224,30 @@ function (obj) {
     this.initWindow();
 }
 
-
 #inspectIt:
-function () {
+function() {
     this.currentTextWidget().inspectIt();
     this.klass().refreshAll();
 }
 
-
 #list:
-function anonymous() {
+function() {
     return this._list;
 }
 
-
 #obj:
-function anonymous() {
+function() {
     return this._obj;
 }
 
-
 #printIt:
-function () {
+function() {
     this.currentTextWidget().printIt();
     this.klass().refreshAll();
 }
 
-
 #refresh:
-function () {
+function() {
     this._refreshing = true;
     var sel = this._list.selectedProperty();
     this._list.clearProperties();
@@ -283,30 +261,26 @@ function () {
     this._refreshing = false;
 }
 
-
 #refreshing:
-function anonymous() {
+function() {
     return this._refreshing;
 }
 
-
 #setObj:
-function (o) {
+function(o) {
     if (!o) {
         throw "no object to inspect";
     }
     this._obj = o;
 }
 
-
 #show:
-function () {
+function() {
     this._frame.setVisible(true);
 }
 
-
 #showPropertyValue:
-function (prop) {
+function(prop) {
     //note: typeof null == 'object'. We should lookup for null before check for object
     var str = "";
     try {
@@ -350,11 +324,9 @@ function (prop) {
     this._valueArea.widget().setText(str);
 }
 
-
 #valueArea:
-function anonymous() {
+function() {
     return this._valueArea;
 }
-
 
 

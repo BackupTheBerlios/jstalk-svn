@@ -1,60 +1,52 @@
 name: SpaceList
 superclass: JSObject
 space: ClassBrowser
-attributes: [widget,model,classBrowser,refreshing]
+attributes: [classBrowser,model,refreshing,widget]
 class_attributes: []
 doc: ""
 
 #widget:
-function anonymous() {
+function() {
     return this._widget;
 }
 
-
 #setWidget:
-function anonymous(widget) {
+function(widget) {
     this._widget = widget;
 }
 
-
 #model:
-function anonymous() {
+function() {
     return this._model;
 }
 
-
 #setModel:
-function anonymous(model) {
+function(model) {
     this._model = model;
 }
 
-
 #classBrowser:
-function anonymous() {
+function() {
     return this._classBrowser;
 }
 
-
 #setClassBrowser:
-function anonymous(classBrowser) {
+function(classBrowser) {
     this._classBrowser = classBrowser;
 }
 
-
 #refreshing:
-function anonymous() {
+function() {
     return this._refreshing;
 }
 
-
 #setRefreshing:
-function anonymous(refreshing) {
+function(refreshing) {
     this._refreshing = refreshing;
 }
 
-
 #refresh:
-function () {
+function() {
     this._refreshing = true;
     var selected = this._widget.getSelectedValue();
     this._model.clear();
@@ -74,9 +66,8 @@ function () {
     this._refreshing = false;
 }
 
-
 #initialize:
-function (classBrowser) {
+function(classBrowser) {
     this._classBrowser = classBrowser;
 
     //spacelist
@@ -114,11 +105,9 @@ function (classBrowser) {
     }));
 }
 
-
 #selectClass:
-function (name) {
+function(name) {
     this._widget.setSelectedValue(name, true);
 }
-
 
 

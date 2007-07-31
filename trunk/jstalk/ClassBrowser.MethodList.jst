@@ -1,108 +1,92 @@
 name: MethodList
 superclass: JSObject
 space: ClassBrowser
-attributes: [widget,model,classButton,instanceButton,classBrowser,refreshing,methods]
+attributes: [classBrowser,classButton,instanceButton,methods,model,refreshing,widget]
 class_attributes: []
 doc: ""
 
 #widget:
-function anonymous() {
+function() {
     return this._widget;
 }
 
-
 #setWidget:
-function anonymous(widget) {
+function(widget) {
     this._widget = widget;
 }
 
-
 #model:
-function anonymous() {
+function() {
     return this._model;
 }
 
-
 #setModel:
-function anonymous(model) {
+function(model) {
     this._model = model;
 }
 
-
 #classButton:
-function anonymous() {
+function() {
     return this._classButton;
 }
 
-
 #setClassButton:
-function anonymous(classButton) {
+function(classButton) {
     this._classButton = classButton;
 }
 
-
 #instanceButton:
-function anonymous() {
+function() {
     return this._instanceButton;
 }
 
-
 #setInstanceButton:
-function anonymous(instanceButton) {
+function(instanceButton) {
     this._instanceButton = instanceButton;
 }
 
-
 #classBrowser:
-function anonymous() {
+function() {
     return this._classBrowser;
 }
 
-
 #setClassBrowser:
-function anonymous(classBrowser) {
+function(classBrowser) {
     this._classBrowser = classBrowser;
 }
 
-
 #refreshing:
-function anonymous() {
+function() {
     return this._refreshing;
 }
 
-
 #setRefreshing:
-function anonymous(refreshing) {
+function(refreshing) {
     this._refreshing = refreshing;
 }
 
-
 #methods:
-function anonymous() {
+function() {
     return this._methods;
 }
 
-
 #setMethods:
-function anonymous(methods) {
+function(methods) {
     this._methods = methods;
 }
 
-
 #classToggled:
-function () {
+function() {
     return this._classButton.isSelected();
 }
 
-
 #selectMethod:
-function (name) {
+function(name) {
     this._widget.setSelectedValue(name, true);
 }
 
-
 #refresh:
-function () {
+function() {
     this._refreshing = true;
     var selected = this._widget.getSelectedValue();
     this._model.clear();
@@ -124,15 +108,13 @@ function () {
     //TODO: set the current selection to this._classBrowser.currentMethod()
 }
 
-
 #instanceToggled:
-function () {
+function() {
     return this._instanceButton.isSelected();
 }
 
-
 #initialize:
-function (classBrowser) {
+function(classBrowser) {
     this._classBrowser = classBrowser;
     var self = this;
     this._instanceButton = new pkg.javax.swing.JToggleButton("Instance", true);
@@ -178,6 +160,5 @@ function (classBrowser) {
         }
     }));
 }
-
 
 
