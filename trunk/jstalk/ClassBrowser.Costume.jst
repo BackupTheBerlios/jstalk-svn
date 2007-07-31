@@ -5,14 +5,9 @@ attributes: [classBrowser,classTreeView,codeArea,frame,methodList,spaceList]
 class_attributes: []
 doc: ""
 
-#frame:
+#classBrowser:
 function() {
-    return this._frame;
-}
-
-#setFrame:
-function(frame) {
-    this._frame = frame;
+    return this._classBrowser;
 }
 
 #classTreeView:
@@ -20,49 +15,19 @@ function() {
     return this._classTreeView;
 }
 
-#setClassTreeView:
-function(classTreeView) {
-    this._classTreeView = classTreeView;
-}
-
-#spaceList:
-function() {
-    return this._spaceList;
-}
-
-#setSpaceList:
-function(spaceList) {
-    this._spaceList = spaceList;
-}
-
-#methodList:
-function() {
-    return this._methodList;
-}
-
-#setMethodList:
-function(methodList) {
-    this._methodList = methodList;
-}
-
 #codeArea:
 function() {
     return this._codeArea;
 }
 
-#setCodeArea:
-function(codeArea) {
-    this._codeArea = codeArea;
+#displayCode:
+function(str) {
+    this._codeArea.widget().setText(str);
 }
 
-#classBrowser:
+#frame:
 function() {
-    return this._classBrowser;
-}
-
-#setClassBrowser:
-function(classBrowser) {
-    this._classBrowser = classBrowser;
+    return this._frame;
 }
 
 #initialize:
@@ -146,6 +111,11 @@ function(classBrowser) {
     master.add(scroller, ctr);
 }
 
+#methodList:
+function() {
+    return this._methodList;
+}
+
 #refresh:
 function() {
     this._classTreeView.refresh();
@@ -153,9 +123,39 @@ function() {
     this._methodList.refresh();
 }
 
-#displayCode:
-function(str) {
-    this._codeArea.widget().setText(str);
+#setClassBrowser:
+function(classBrowser) {
+    this._classBrowser = classBrowser;
+}
+
+#setClassTreeView:
+function(classTreeView) {
+    this._classTreeView = classTreeView;
+}
+
+#setCodeArea:
+function(codeArea) {
+    this._codeArea = codeArea;
+}
+
+#setFrame:
+function(frame) {
+    this._frame = frame;
+}
+
+#setMethodList:
+function(methodList) {
+    this._methodList = methodList;
+}
+
+#setSpaceList:
+function(spaceList) {
+    this._spaceList = spaceList;
+}
+
+#setTitle:
+function(title) {
+    this._frame.setTitle("ClassBrowser [" + title + "]");
 }
 
 #show:
@@ -163,9 +163,9 @@ function() {
     this._frame.setVisible(true);
 }
 
-#setTitle:
-function(title) {
-    this._frame.setTitle("ClassBrowser [" + title + "]");
+#spaceList:
+function() {
+    return this._spaceList;
 }
 
 

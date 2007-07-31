@@ -5,24 +5,9 @@ attributes: [classBrowser,classButton,instanceButton,methods,model,refreshing,wi
 class_attributes: []
 doc: ""
 
-#widget:
+#classBrowser:
 function() {
-    return this._widget;
-}
-
-#setWidget:
-function(widget) {
-    this._widget = widget;
-}
-
-#model:
-function() {
-    return this._model;
-}
-
-#setModel:
-function(model) {
-    this._model = model;
+    return this._classBrowser;
 }
 
 #classButton:
@@ -30,87 +15,9 @@ function() {
     return this._classButton;
 }
 
-#setClassButton:
-function(classButton) {
-    this._classButton = classButton;
-}
-
-#instanceButton:
-function() {
-    return this._instanceButton;
-}
-
-#setInstanceButton:
-function(instanceButton) {
-    this._instanceButton = instanceButton;
-}
-
-#classBrowser:
-function() {
-    return this._classBrowser;
-}
-
-#setClassBrowser:
-function(classBrowser) {
-    this._classBrowser = classBrowser;
-}
-
-#refreshing:
-function() {
-    return this._refreshing;
-}
-
-#setRefreshing:
-function(refreshing) {
-    this._refreshing = refreshing;
-}
-
-#methods:
-function() {
-    return this._methods;
-}
-
-#setMethods:
-function(methods) {
-    this._methods = methods;
-}
-
 #classToggled:
 function() {
     return this._classButton.isSelected();
-}
-
-#selectMethod:
-function(name) {
-    this._widget.setSelectedValue(name, true);
-}
-
-#refresh:
-function() {
-    this._refreshing = true;
-    var selected = this._widget.getSelectedValue();
-    this._model.clear();
-    var klass = this._classBrowser.currentClass();
-    if (!klass) {
-        return;
-    }
-    var methods;
-    if (this._instanceButton.isSelected()) {
-        methods = klass.instanceMethods().sort();
-    } else {
-        methods = klass.methods().sort();
-    }
-    for (var i = 0; i < methods.length; i++) {
-        this._model.addElement(methods[i]);
-    }
-    this._widget.setSelectedValue(selected, true);
-    this._refreshing = false;
-    //TODO: set the current selection to this._classBrowser.currentMethod()
-}
-
-#instanceToggled:
-function() {
-    return this._instanceButton.isSelected();
 }
 
 #initialize:
@@ -159,6 +66,99 @@ function(classBrowser) {
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
     }));
+}
+
+#instanceButton:
+function() {
+    return this._instanceButton;
+}
+
+#instanceToggled:
+function() {
+    return this._instanceButton.isSelected();
+}
+
+#methods:
+function() {
+    return this._methods;
+}
+
+#model:
+function() {
+    return this._model;
+}
+
+#refresh:
+function() {
+    this._refreshing = true;
+    var selected = this._widget.getSelectedValue();
+    this._model.clear();
+    var klass = this._classBrowser.currentClass();
+    if (!klass) {
+        return;
+    }
+    var methods;
+    if (this._instanceButton.isSelected()) {
+        methods = klass.instanceMethods().sort();
+    } else {
+        methods = klass.methods().sort();
+    }
+    for (var i = 0; i < methods.length; i++) {
+        this._model.addElement(methods[i]);
+    }
+    this._widget.setSelectedValue(selected, true);
+    this._refreshing = false;
+    //TODO: set the current selection to this._classBrowser.currentMethod()
+}
+
+#refreshing:
+function() {
+    return this._refreshing;
+}
+
+#selectMethod:
+function(name) {
+    this._widget.setSelectedValue(name, true);
+}
+
+#setClassBrowser:
+function(classBrowser) {
+    this._classBrowser = classBrowser;
+}
+
+#setClassButton:
+function(classButton) {
+    this._classButton = classButton;
+}
+
+#setInstanceButton:
+function(instanceButton) {
+    this._instanceButton = instanceButton;
+}
+
+#setMethods:
+function(methods) {
+    this._methods = methods;
+}
+
+#setModel:
+function(model) {
+    this._model = model;
+}
+
+#setRefreshing:
+function(refreshing) {
+    this._refreshing = refreshing;
+}
+
+#setWidget:
+function(widget) {
+    this._widget = widget;
+}
+
+#widget:
+function() {
+    return this._widget;
 }
 
 

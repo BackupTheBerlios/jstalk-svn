@@ -470,10 +470,10 @@ function() {
     return this._template;
 }
 
-#isClass:
+#attributes:
 function() {
 
-    return false;
+    return this.klass().instanceAttributes();
 }
 
 #doSuper:
@@ -493,22 +493,22 @@ function(_farguments) {
     }
 }
 
-#attributes:
+#isClass:
 function() {
 
-    return this.klass().instanceAttributes();
-}
-
-#methods:
-function() {
-
-    return this.klass().instanceMethods();
+    return false;
 }
 
 #klass:
 function() {
 
     return this._klass;
+}
+
+#methods:
+function() {
+
+    return this.klass().instanceMethods();
 }
 
 

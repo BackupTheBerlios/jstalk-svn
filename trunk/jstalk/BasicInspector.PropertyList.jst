@@ -5,55 +5,14 @@ attributes: [inspector,model,widget]
 class_attributes: []
 doc: ""
 
-#model:
-function() {
-    return this._model;
-}
-
-#setModel:
-function(model) {
-    this._model = model;
-}
-
-#widget:
-function() {
-    return this._widget;
-}
-
-#setWidget:
-function(widget) {
-    this._widget = widget;
-}
-
-#inspector:
-function() {
-    return this._inspector;
-}
-
-#setInspector:
-function(inspector) {
-    this._inspector = inspector;
-}
-
-#selectedProperty:
-function() {
-    var ret = this._widget.getSelectedValue();
-    return ret ? ret.toString() : null;
-}
-
-#setSelectedProperty:
-function(val) {
-    this._widget.setSelectedValue(val, true);
+#addProperty:
+function(propname) {
+    this._model.addElement(propname);
 }
 
 #clearProperties:
 function() {
     this._model.clear();
-}
-
-#addProperty:
-function(propname) {
-    this._model.addElement(propname);
 }
 
 #createEvents:
@@ -96,6 +55,47 @@ function(inspector) {
     this._widget = new pkg.javax.swing.JList(this._model);
     this._widget.setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
     this.createEvents();
+}
+
+#inspector:
+function() {
+    return this._inspector;
+}
+
+#model:
+function() {
+    return this._model;
+}
+
+#selectedProperty:
+function() {
+    var ret = this._widget.getSelectedValue();
+    return ret ? ret.toString() : null;
+}
+
+#setInspector:
+function(inspector) {
+    this._inspector = inspector;
+}
+
+#setModel:
+function(model) {
+    this._model = model;
+}
+
+#setSelectedProperty:
+function(val) {
+    this._widget.setSelectedValue(val, true);
+}
+
+#setWidget:
+function(widget) {
+    this._widget = widget;
+}
+
+#widget:
+function() {
+    return this._widget;
 }
 
 

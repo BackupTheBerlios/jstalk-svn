@@ -5,89 +5,9 @@ attributes: [inspector,lists,models,widget]
 class_attributes: []
 doc: ""
 
-#widget:
-function() {
-    return this._widget;
-}
-
-#setWidget:
-function(widget) {
-    this._widget = widget;
-}
-
-#inspector:
-function() {
-    return this._inspector;
-}
-
-#setInspector:
-function(inspector) {
-    this._inspector = inspector;
-}
-
-#lists:
-function() {
-    return this._lists;
-}
-
-#setLists:
-function(lists) {
-    this._lists = lists;
-}
-
-#models:
-function() {
-    return this._models;
-}
-
-#setModels:
-function(models) {
-    this._models = models;
-}
-
 #addAttributeProperty:
 function(prop) {
     this._models[0].addElement(prop);
-}
-
-#addProperty:
-function(prop) {
-    this._models[2].addElement(prop);
-}
-
-#setSelectedProperty:
-function(val) {
-    var i = this._widget.getSelectedIndex();
-    this._lists[i].setSelectedValue(val, true);
-}
-
-#clearProperties:
-function() {
-    for (var i = 0; i < 3; i++) {
-        this._models[i].clear();
-    }
-}
-
-#initialize:
-function(inspector) {
-    this._inspector = inspector;
-    this._widget = new pkg.javax.swing.JTabbedPane();
-    this._lists = new Array(3);
-    this._models = new Array(3);
-    for (var i = 0; i < 3; i++) {
-        this._models[i] = new pkg.javax.swing.DefaultListModel;
-        this._lists[i] = new pkg.javax.swing.JList(this._models[i]);
-        this._lists[i].setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
-    }
-    this._widget.addTab("attributes", this._lists[0]);
-    this._widget.addTab("methods", this._lists[1]);
-    this._widget.addTab("all", this._lists[2]);
-    this.createEvents();
-}
-
-#addMethodProperty:
-function(prop) {
-    this._models[1].addElement(prop);
 }
 
 #addInAll:
@@ -95,6 +15,23 @@ function(prop) {
     this._models[0].addElement(prop);
     this._models[1].addElement(prop);
     this._models[2].addElement(prop);
+}
+
+#addMethodProperty:
+function(prop) {
+    this._models[1].addElement(prop);
+}
+
+#addProperty:
+function(prop) {
+    this._models[2].addElement(prop);
+}
+
+#clearProperties:
+function() {
+    for (var i = 0; i < 3; i++) {
+        this._models[i].clear();
+    }
 }
 
 #createEvents:
@@ -125,11 +62,74 @@ function() {
     }
 }
 
+#initialize:
+function(inspector) {
+    this._inspector = inspector;
+    this._widget = new pkg.javax.swing.JTabbedPane();
+    this._lists = new Array(3);
+    this._models = new Array(3);
+    for (var i = 0; i < 3; i++) {
+        this._models[i] = new pkg.javax.swing.DefaultListModel;
+        this._lists[i] = new pkg.javax.swing.JList(this._models[i]);
+        this._lists[i].setSelectionMode(pkg.javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    }
+    this._widget.addTab("attributes", this._lists[0]);
+    this._widget.addTab("methods", this._lists[1]);
+    this._widget.addTab("all", this._lists[2]);
+    this.createEvents();
+}
+
+#inspector:
+function() {
+    return this._inspector;
+}
+
+#lists:
+function() {
+    return this._lists;
+}
+
+#models:
+function() {
+    return this._models;
+}
+
 #selectedProperty:
 function() {
     var i = this._widget.getSelectedIndex();
     var ret = this._lists[i].getSelectedValue();
     return ret ? ret.toString() : null;
+}
+
+#setInspector:
+function(inspector) {
+    this._inspector = inspector;
+}
+
+#setLists:
+function(lists) {
+    this._lists = lists;
+}
+
+#setModels:
+function(models) {
+    this._models = models;
+}
+
+#setSelectedProperty:
+function(val) {
+    var i = this._widget.getSelectedIndex();
+    this._lists[i].setSelectedValue(val, true);
+}
+
+#setWidget:
+function(widget) {
+    this._widget = widget;
+}
+
+#widget:
+function() {
+    return this._widget;
 }
 
 

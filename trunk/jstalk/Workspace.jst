@@ -53,28 +53,6 @@ function() {
     return this._windows;
 }
 
-#isVisible:
-function() {
-    return this._frame.isVisible();
-}
-
-#initUI:
-function() {
-    this._frame = new pkg.javax.swing.JFrame();
-    this._frame.setSize(300, 300);
-    this._frame.setTitle("Workspace");
-    this._textarea = JSTextArea.create();
-    var scroller = new pkg.javax.swing.JScrollPane();
-    scroller.getViewport().add(this._textarea.widget());
-    this._frame.getContentPane().add(scroller);
-    this.createMenuBar();
-}
-
-#puts:
-function(str) {
-    this.print(str + "\n");
-}
-
 #createMenuBar:
 function() {
     var self = this;
@@ -114,14 +92,16 @@ function() {
     this._frame.setJMenuBar(mb);
 }
 
-#print:
-function(str) {
-    this._textarea.append(str);
-}
-
-#show:
+#initUI:
 function() {
-    this._frame.setVisible(true);
+    this._frame = new pkg.javax.swing.JFrame();
+    this._frame.setSize(300, 300);
+    this._frame.setTitle("Workspace");
+    this._textarea = JSTextArea.create();
+    var scroller = new pkg.javax.swing.JScrollPane();
+    scroller.getViewport().add(this._textarea.widget());
+    this._frame.getContentPane().add(scroller);
+    this.createMenuBar();
 }
 
 #initialize:
@@ -132,6 +112,26 @@ function() {
     }
     this.initUI();
     this.klass().windows().push(this);
+}
+
+#isVisible:
+function() {
+    return this._frame.isVisible();
+}
+
+#print:
+function(str) {
+    this._textarea.append(str);
+}
+
+#puts:
+function(str) {
+    this.print(str + "\n");
+}
+
+#show:
+function() {
+    this._frame.setVisible(true);
 }
 
 

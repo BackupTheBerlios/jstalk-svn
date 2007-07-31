@@ -5,34 +5,26 @@ attributes: [currentClass,refreshing,widget]
 class_attributes: []
 doc: ""
 
-#widget:
-function() {
-    return this._widget;
-}
-
-#setWidget:
-function(widget) {
-    this._widget = widget;
-}
-
 #currentClass:
 function() {
     return this._currentClass;
 }
 
-#setCurrentClass:
-function(currentClass) {
-    this._currentClass = currentClass;
-}
-
-#refreshing:
-function() {
-    return this._refreshing;
-}
-
-#setRefreshing:
-function(refreshing) {
-    this._refreshing = refreshing;
+#initialize:
+function(classBrowser) {
+    var self = this;
+    this._widget = new pkg.javax.swing.JTree();
+    this._widget.getSelectionModel().setSelectionMode(pkg.javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this._widget.addTreeSelectionListener(JavaEvent.create(function (e) {
+        if (self._refreshing) {
+            return;
+        }
+        var str = self._widget.getLastSelectedPathComponent();
+        if (str) {
+            self._currentClass = $global[str];
+        }
+        classBrowser.selectClass(self._currentClass, true);
+    }));
 }
 
 #refresh:
@@ -57,21 +49,29 @@ function() {
     this._refreshing = false;
 }
 
-#initialize:
-function(classBrowser) {
-    var self = this;
-    this._widget = new pkg.javax.swing.JTree();
-    this._widget.getSelectionModel().setSelectionMode(pkg.javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION);
-    this._widget.addTreeSelectionListener(JavaEvent.create(function (e) {
-        if (self._refreshing) {
-            return;
-        }
-        var str = self._widget.getLastSelectedPathComponent();
-        if (str) {
-            self._currentClass = $global[str];
-        }
-        classBrowser.selectClass(self._currentClass, true);
-    }));
+#refreshing:
+function() {
+    return this._refreshing;
+}
+
+#setCurrentClass:
+function(currentClass) {
+    this._currentClass = currentClass;
+}
+
+#setRefreshing:
+function(refreshing) {
+    this._refreshing = refreshing;
+}
+
+#setWidget:
+function(widget) {
+    this._widget = widget;
+}
+
+#widget:
+function() {
+    return this._widget;
 }
 
 

@@ -5,65 +5,9 @@ attributes: [classBrowser,model,refreshing,widget]
 class_attributes: []
 doc: ""
 
-#widget:
-function() {
-    return this._widget;
-}
-
-#setWidget:
-function(widget) {
-    this._widget = widget;
-}
-
-#model:
-function() {
-    return this._model;
-}
-
-#setModel:
-function(model) {
-    this._model = model;
-}
-
 #classBrowser:
 function() {
     return this._classBrowser;
-}
-
-#setClassBrowser:
-function(classBrowser) {
-    this._classBrowser = classBrowser;
-}
-
-#refreshing:
-function() {
-    return this._refreshing;
-}
-
-#setRefreshing:
-function(refreshing) {
-    this._refreshing = refreshing;
-}
-
-#refresh:
-function() {
-    this._refreshing = true;
-    var selected = this._widget.getSelectedValue();
-    this._model.clear();
-    var klass = this._classBrowser.currentClass();
-    if (!klass) {
-        return;
-    }
-    if (klass.space()) {
-        klass = klass.space();
-    }
-    this._model.addElement(klass.className());
-    var owned = klass.ownedClasses();
-    for (var i = 0; i < owned.length; i++) {
-        this._model.addElement(owned[i].className());
-    }
-    this._widget.setSelectedValue(selected, true);
-    this._refreshing = false;
 }
 
 #initialize:
@@ -105,9 +49,65 @@ function(classBrowser) {
     }));
 }
 
+#model:
+function() {
+    return this._model;
+}
+
+#refresh:
+function() {
+    this._refreshing = true;
+    var selected = this._widget.getSelectedValue();
+    this._model.clear();
+    var klass = this._classBrowser.currentClass();
+    if (!klass) {
+        return;
+    }
+    if (klass.space()) {
+        klass = klass.space();
+    }
+    this._model.addElement(klass.className());
+    var owned = klass.ownedClasses();
+    for (var i = 0; i < owned.length; i++) {
+        this._model.addElement(owned[i].className());
+    }
+    this._widget.setSelectedValue(selected, true);
+    this._refreshing = false;
+}
+
+#refreshing:
+function() {
+    return this._refreshing;
+}
+
 #selectClass:
 function(name) {
     this._widget.setSelectedValue(name, true);
+}
+
+#setClassBrowser:
+function(classBrowser) {
+    this._classBrowser = classBrowser;
+}
+
+#setModel:
+function(model) {
+    this._model = model;
+}
+
+#setRefreshing:
+function(refreshing) {
+    this._refreshing = refreshing;
+}
+
+#setWidget:
+function(widget) {
+    this._widget = widget;
+}
+
+#widget:
+function() {
+    return this._widget;
 }
 
 

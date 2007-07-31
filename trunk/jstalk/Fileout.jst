@@ -38,7 +38,7 @@ function(klass) {
     for (var i = 0; i < methods.length; i++) {
         txt += ">>" + methods[i] + ":\n" + klass.method(methods[i]).toSource() + "\n\n";
     }
-    var methods = klass.instanceMethods();
+    methods = klass.instanceMethods().sort();
     for (var i = 0; i < methods.length; i++) {
         txt += "#" + methods[i] + ":\n" + klass.instanceMethod(methods[i]).toSource() + "\n\n";
     }
